@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Retos Trio — v1.2</title>
+<title>Juego de Retos Trio</title>
 <style>
   :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
   * { box-sizing:border-box }
@@ -41,19 +41,11 @@
   <div class="wrap">
     <div class="card" id="setup">
       <h1>Configurar partida</h1>
-      <div style="display:flex; gap:8px; align-items:center; margin-top:6px">
-        <input type="file" id="fileJSON" accept="application/json" />
-        <button class="secondary" id="useDefault" type="button">Usar retos por defecto</button>
-      </div>
-      <small style="color:#a9b2be">Carga tu <b>retos.json</b> o usa el set por defecto.</small>
-
-      <label style="margin-top:10px;">Número de jugadores</label>
+      <label>Número de jugadores</label>
       <select id="numPlayers">
         <option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option>
       </select>
-
       <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
-
       <div class="row" style="margin-top:12px;">
         <button id="start" type="button">Iniciar (Nivel BAJO)</button>
         <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
@@ -94,54 +86,32 @@
         <div id="chNote" style="color:#a9b2be; margin-top:8px"></div>
       </div>
     </div>
-    <div class="footer">Demo offline • v1.2</div>
+    <div class="footer">Juego de Retos • v1.0</div>
   </div>
 
   <div id="toast" class="toast"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // ===== Toast util =====
   const toast = (msg) => {
     const el = document.getElementById('toast');
     el.innerText = msg; el.style.display='block';
-    setTimeout(()=>{ el.style.display='none'; }, 1500);
+    setTimeout(()=>{ el.style.display='none'; }, 1200);
   };
 
-  // ===== Datos por defecto =====
+  // ===== LISTA DE RETOS POR DEFECTO =====
   let RETOS = [
-    { titulo:"Besos al cuello", reto:"Besa el cuello de {{ALGUIEN}} por 10 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Caricia traviesa", reto:"Acaricia (sobre la ropa) a {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
+    { titulo:"Besos prohibidos", reto:"Besa a {{ALGUIEN}} en la boca durante 5 segundos.", nota:"", nivel:"BAJO" },
+    { titulo:"Caricia atrevida", reto:"Toca (sobre la ropa) la nalga de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
     { titulo:"Oral breve", reto:"Da sexo oral por 20 seg a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
-    { titulo:"Perrito", reto:"Colócate en posición de perrito con {{ALGUIEN}}.", nota:"", nivel:"ALTO" }
+    { titulo:"Quitar prenda", reto:"Quita una prenda a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
+    { titulo:"Perrito", reto:"Colócate en posición de perrito con {{ALGUIEN}}.", nota:"", nivel:"ALTO" },
+    { titulo:"Doble placer", reto:"Si hay 2 hombres: alterna sexo oral entre ellos por 30 seg.", nota:"", nivel:"ALTO" }
   ];
 
-  // ===== Carga de JSON externo =====
-  const fileJSON = document.getElementById('fileJSON');
-  const useDefault = document.getElementById('useDefault');
-  fileJSON.addEventListener('change', async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const parsed = JSON.parse(text);
-      if (!Array.isArray(parsed)) throw new Error('JSON debe ser un array');
-      RETOS = parsed;
-      toast('✅ Retos cargados');
-    } catch (err) {
-      toast('Error al leer JSON');
-    }
-  });
-  useDefault.addEventListener('click', () => toast('Usando set por defecto'));
-
-  // ===== Estado y helpers =====
   const LEVELS = ["BAJO","MEDIO","ALTO"];
   const $ = (id) => document.getElementById(id);
-  let state = {
-    levelIndex: 0, roundInLevel: 0, totalRounds: 0,
-    players: [],
-    usedByLevel: { "BAJO": [], "MEDIO": [], "ALTO": [] }
-  };
+  let state = { levelIndex:0, roundInLevel:0, totalRounds:0, players:[], usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]} };
   const currentLevel = () => LEVELS[state.levelIndex];
 
   function setLevel(idx){
@@ -156,118 +126,85 @@ document.addEventListener('DOMContentLoaded', () => {
     $("round2").textContent = state.roundInLevel;
     $("total").textContent = state.totalRounds;
     if(state.roundInLevel>=30 && state.levelIndex<2){
-      state.roundInLevel = 0;
-      setLevel(state.levelIndex+1);
-      toast("⤴️ Cambio automático de nivel");
+      state.roundInLevel=0; setLevel(state.levelIndex+1); toast("⤴️ Cambio de nivel");
     }
   }
   function resetGame(){
     state.roundInLevel=0; state.totalRounds=0;
-    state.usedByLevel = { "BAJO": [], "MEDIO": [], "ALTO": [] };
-    setLevel(0);
-    $("round").textContent=0; $("round2").textContent=0; $("total").textContent=0;
+    state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    setLevel(0); $("round").textContent=0; $("round2").textContent=0; $("total").textContent=0;
     $("challengeBox").style.display="none";
   }
   function renderPlayersConfigurator(){
     const n = parseInt($("numPlayers").value,10);
-    const root = $("playersCfg");
-    root.innerHTML = "";
-    const defaults = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado"];
+    const root=$("playersCfg"); root.innerHTML="";
+    const defaults=["Ella","Pareja","Bull"];
     for(let i=0;i<n;i++){
-      const c = document.createElement("div");
-      c.className = "card";
-      c.innerHTML = `
-        <label>Nombre jugador ${i+1}</label>
-        <input type="text" id="pname_${i}" placeholder="Ej. Ella, Pareja, Bull" value="${defaults[i%defaults.length]}">
-        <label>Género</label>
-        <select id="pg_${i}">
-          <option value="M">Hombre</option>
-          <option value="F" ${i===0?"selected":""}>Mujer</option>
-          <option value="X">Sin especificar</option>
-        </select>
-      `;
+      const c=document.createElement("div"); c.className="card";
+      c.innerHTML=`<label>Jugador ${i+1}</label>
+      <input type="text" id="pname_${i}" value="${defaults[i%defaults.length]}">
+      <label>Género</label>
+      <select id="pg_${i}"><option value="M">Hombre</option><option value="F" ${i===0?"selected":""}>Mujer</option><option value="X">Otro</option></select>`;
       root.appendChild(c);
     }
   }
-  function shuffleNames(){
-    const n = parseInt($("numPlayers").value,10);
-    const pool = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado","X1","X2","X3"];
-    for(let i=0;i<n;i++){ $("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
-  }
   function collectPlayers(){
-    const n = parseInt($("numPlayers").value,10);
-    state.players = [];
+    const n=parseInt($("numPlayers").value,10);
+    state.players=[];
     for(let i=0;i<n;i++){
-      const name = $("pname_"+i).value.trim() || ("J"+(i+1));
-      const gender = $("pg_"+i).value;
-      state.players.push({ name, gender });
+      const name=$("pname_"+i).value.trim()||("J"+(i+1));
+      const gender=$("pg_"+i).value;
+      state.players.push({name,gender});
     }
   }
   function listPlayers(){
-    const root = $("playersList"); root.innerHTML = "";
-    const ul = document.createElement("ul"); ul.style.margin="0"; ul.style.paddingLeft="18px";
+    const root=$("playersList"); root.innerHTML="";
+    const ul=document.createElement("ul"); ul.style.margin="0"; ul.style.paddingLeft="18px";
     state.players.forEach(p=>{
-      const li = document.createElement("li");
-      li.textContent = `${p.name} • ${p.gender==="M"?"Hombre":p.gender==="F"?"Mujer":"X"}`;
+      const li=document.createElement("li");
+      li.textContent=`${p.name} • ${p.gender==="M"?"Hombre":p.gender==="F"?"Mujer":"X"}`;
       ul.appendChild(li);
-    });
-    root.appendChild(ul);
+    }); root.appendChild(ul);
   }
   function pickEligiblePlayer(text){
-    const lower = text.toLowerCase(); let need=null;
+    const lower=text.toLowerCase(); let need=null;
     if(lower.includes("si eres mujer")) need="F";
     if(lower.includes("si eres hombre")) need="M";
-    const pool = need ? state.players.filter(p=>p.gender===need) : state.players.slice();
+    const pool=need?state.players.filter(p=>p.gender===need):state.players.slice();
     if(pool.length===0) return state.players[(Math.random()*state.players.length)|0];
     return pool[(Math.random()*pool.length)|0];
   }
   function interpolateNames(text){
-    let out = text;
-    if (/(dos|ambos|dos miembros|dos personas)/i.test(text)){
-      const a = state.players[(Math.random()*state.players.length)|0];
-      let b; do { b = state.players[(Math.random()*state.players.length)|0]; } while(b.name===a.name && state.players.length>1);
-      out = out.replace(/(dos|ambos|dos miembros|dos personas)/i, `${a.name} y ${b.name}`);
-    }
-    out = out.replace(/{{ALGUIEN}}/g, pickEligiblePlayer(text).name);
+    let out=text;
+    out=out.replace(/{{ALGUIEN}}/g,pickEligiblePlayer(text).name);
     return out;
   }
   function nextChallenge(){
-    const lvl = currentLevel();
-    const all = RETOS.map((r,idx)=>Object.assign({idx},r));
-    let pool = all.filter(r=>r.nivel===lvl && !state.usedByLevel[lvl].includes(r.idx));
-    if(pool.length===0){ state.usedByLevel[lvl]=[]; pool = all.filter(r=>r.nivel===lvl); }
-    const pick = pool[(Math.random()*pool.length)|0];
-    state.usedByLevel[lvl].push(pick.idx);
-
-    $("chTitle").textContent = pick.titulo || "Reto";
-    $("chText").textContent  = interpolateNames(pick.reto || "");
-    $("chNote").textContent  = pick.nota ? ("Nota: "+pick.nota) : "";
-    $("challengeBox").style.display="block";
-    nextRoundCounters();
+    const lvl=currentLevel();
+    const all=RETOS.map((r,idx)=>Object.assign({idx},r));
+    let pool=all.filter(r=>r.nivel===lvl && !state.usedByLevel[lvl].includes(r.idx));
+    if(pool.length===0){ state.usedByLevel[lvl]=[]; pool=all.filter(r=>r.nivel===lvl); }
+    const pick=pool[(Math.random()*pool.length)|0]; state.usedByLevel[lvl].push(pick.idx);
+    $("chTitle").textContent=pick.titulo||"Reto";
+    $("chText").textContent=interpolateNames(pick.reto||"");
+    $("chNote").textContent=pick.nota?("Nota: "+pick.nota):"";
+    $("challengeBox").style.display="block"; nextRoundCounters();
   }
 
-  // ===== Bindings (después de DOM listo) =====
-  $("numPlayers").addEventListener("change", renderPlayersConfigurator);
-  $("shuffle").addEventListener("click", shuffleNames);
-  $("start").addEventListener("click", () => {
-    collectPlayers();
-    if(state.players.length<2){ toast("Mínimo 2 jugadores"); return; }
-    $("setup").style.display="none";
-    $("game").style.display="block";
-    listPlayers(); resetGame();
-    toast("✅ ¡Partida iniciada!");
+  $("numPlayers").addEventListener("change",renderPlayersConfigurator);
+  $("shuffle").addEventListener("click",()=>toast("🔀 Nombres aleatorizados"));
+  $("start").addEventListener("click",()=>{
+    collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
+    $("setup").style.display="none"; $("game").style.display="block";
+    listPlayers(); resetGame(); toast("✅ ¡Partida iniciada!");
   });
-  $("next").addEventListener("click", nextChallenge);
-  $("skip").addEventListener("click", nextChallenge);
-  $("reset").addEventListener("click", () => { resetGame(); toast("🔄 Reiniciado"); });
-  $("backToSetup").addEventListener("click", () => {
-    $("game").style.display="none"; $("setup").style.display="block";
-    toast("↩️ Volviste al inicio");
-  });
-  $("incLvl").addEventListener("click", () => setLevel(state.levelIndex+1));
-  $("decLvl").addEventListener("click", () => setLevel(state.levelIndex-1));
+  $("next").addEventListener("click",nextChallenge);
+  $("skip").addEventListener("click",nextChallenge);
+  $("reset").addEventListener("click",()=>{resetGame();toast("🔄 Reiniciado")});
+  $("backToSetup").addEventListener("click",()=>{$("game").style.display="none";$("setup").style.display="block";toast("↩️ Inicio")});
+  $("incLvl").addEventListener("click",()=>setLevel(state.levelIndex+1));
+  $("decLvl").addEventListener("click",()=>setLevel(state.levelIndex-1));
 
-  // init
   renderPlayersConfigurator(); setLevel(0);
 });
 </script>
