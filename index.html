@@ -3,43 +3,68 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Juego de Retos • Trio (v2.3)</title>
+<title>Juego de Retos • Trio (v2.4 UI)</title>
 <style>
-  :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
-  * { box-sizing:border-box }
-  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial; background:var(--bg); color:var(--ink) }
-  header { position:sticky; top:0; background:linear-gradient(180deg, rgba(11,12,16,.95), rgba(11,12,16,.75)); backdrop-filter:blur(6px); padding:12px 16px; border-bottom:1px solid #1d2026; display:flex; gap:8px; flex-wrap:wrap }
-  .chip { padding:6px 10px; border-radius:999px; background:#1b1f26; border:1px solid #272b33; color:var(--muted); font-size:12px }
-  .lvl { font-weight:700 }
-  .wrap { max-width:980px; margin:0 auto; padding:16px }
-  .card { background:#111318; border:1px solid #1d2026; border-radius:16px; padding:16px }
-  h1 { font-size:18px; margin:0 }
-  h2 { font-size:16px; margin:0 0 10px; color:var(--muted) }
-  label { display:block; margin:10px 0 6px; color:var(--muted) }
-  input, select, button, textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid #282c34; background:#151820; color:var(--ink) }
-  button { background:var(--accent); border-color:transparent; font-weight:700; cursor:pointer }
-  button.secondary { background:#1d2230; border:1px solid #2e3444; font-weight:600 }
-  textarea { min-height:120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; resize:vertical }
-  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px }
-  .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px }
-  .pill { border-radius:999px; padding:4px 10px; background:#1c2030; border:1px solid #2a3042; color:#a9b2be; font-size:12px; display:inline-block; margin-right:6px }
-  .challenge { margin-top:14px; padding:14px; background:#0f1117; border:1px dashed #2a3042; border-radius:12px }
-  .gridPlayers { display:grid; grid-template-columns:repeat(2,1fr); gap:8px }
-  .gridPlayers .card { padding:12px }
-  .footer { color:#a9b2be; font-size:12px; text-align:center; padding:14px }
-  .toast { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#1d2230; border:1px solid #2e3444; color:#fff; padding:8px 12px; border-radius:10px; font-size:12px; display:none; z-index:10 }
-  .muted { color:#a9b2be; font-size:12px }
-  details summary { cursor:pointer; margin:8px 0; color:#d3d8e0 }
-  .btnrow { display:flex; gap:8px; flex-wrap:wrap }
+  :root {
+    --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; --accent-2:#9c8cff;
+    --border:#1d2026; --chip:#1b1f26; --chip2:#232838; --good:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial;background:var(--bg);color:var(--ink)}
+  header{position:sticky;top:0;background:linear-gradient(180deg,rgba(11,12,16,.95),rgba(11,12,16,.75));backdrop-filter:blur(6px);padding:12px 16px;border-bottom:1px solid var(--border)}
+  .wrap{max-width:980px;margin:0 auto;padding:16px}
+  h1{margin:0 0 8px 0;font-size:20px}
+  h2{margin:0 0 10px 0;font-size:16px;color:var(--muted)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
+  .chip{padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid #272b33;color:var(--muted);font-size:12px}
+  .seg{display:flex;gap:6px}
+  .seg button{flex:1;padding:10px;border-radius:999px;border:1px solid var(--border);background:#171a23;color:#cfd6df;cursor:pointer}
+  .seg button.active{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:transparent;color:#fff;font-weight:700}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  label{display:block;margin:10px 0 6px;color:var(--muted)}
+  input,select,button,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #282c34;background:#151820;color:var(--ink)}
+  button{cursor:pointer}
+  button.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));border-color:transparent;color:#fff;font-weight:800}
+  button.secondary{background:#1d2230;border:1px solid #2e3444;font-weight:600}
+  textarea{min-height:120px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
+  details summary{cursor:pointer;color:#d3d8e0;margin:8px 0}
+  .progress{height:10px;background:#171a23;border-radius:999px;border:1px solid var(--border);overflow:hidden}
+  .progress > div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .25s ease}
+  .gridPlayers{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .gridPlayers .card{padding:12px}
+  .challenge{margin-top:14px;padding:16px;background:#0f1117;border:1px dashed #2a3042;border-radius:12px}
+  .challenge .title{font-weight:800;margin-bottom:6px}
+  .pill{border-radius:999px;padding:4px 10px;background:#1c2030;border:1px solid #2a3042;color:#a9b2be;font-size:12px;display:inline-block;margin-right:6px}
+  .muted{color:#a9b2be;font-size:12px}
+  .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#1d2230;border:1px solid #2e3444;color:#fff;padding:8px 12px;border-radius:10px;font-size:12px;display:none;z-index:20}
+  /* Control inferior fijo */
+  .dock{position:sticky;bottom:-1px;z-index:15;background:linear-gradient(180deg,rgba(11,12,16,.2),rgba(11,12,16,.9));backdrop-filter:blur(6px);border-top:1px solid var(--border);padding:10px 0;margin-top:14px}
+  .dock .btns{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:8px}
+  .btn-big{padding:16px 14px;border-radius:14px;font-size:16px}
+  .btn-green{background:linear-gradient(135deg,#34d399,#22c55e);border-color:transparent;color:#05130a;font-weight:900}
+  .btn-warn{background:#2a2530;border:1px solid #45324b}
+  .btn-undo{background:#1c2838;border:1px solid #2e3f58}
+  .history{margin-top:10px}
+  .history ul{margin:0;padding-left:18px;max-height:150px;overflow:auto}
+  .switch{display:flex;align-items:center;gap:8px}
+  .footer{text-align:center;color:#a9b2be;font-size:12px;padding:14px}
 </style>
 </head>
 <body>
   <header>
-    <button id="decLvl" class="secondary" type="button">◀︎</button>
-    <div class="chip">Nivel: <span id="lvl" class="lvl">BAJO</span></div>
-    <button id="incLvl" class="secondary" type="button">▶︎</button>
-    <div class="chip">Ronda: <span id="round">0</span>/30</div>
-    <div class="chip">Fase: <span id="phase">1/3</span></div>
+    <div class="wrap" style="padding:0 8px;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+        <div class="seg" style="flex:1;min-width:260px">
+          <button id="btnLow"  class="active" type="button">BAJO</button>
+          <button id="btnMid"  type="button">MEDIO</button>
+          <button id="btnHigh" type="button">ALTO</button>
+        </div>
+        <div class="chip">Ronda: <span id="round">0</span>/30</div>
+        <div class="chip">Fase: <span id="phase">1/3</span></div>
+      </div>
+      <div class="progress" style="margin-top:8px"><div id="bar"></div></div>
+    </div>
   </header>
 
   <div class="wrap">
@@ -53,29 +78,28 @@
       <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
 
       <details>
-        <summary>Opcional: pegar / guardar tus propias listas (30 por nivel)</summary>
+        <summary>Listas personalizadas (30 por nivel) • Guardado local</summary>
         <p class="muted">Un reto por línea. Puedes usar <code>{{ACTOR}}</code> y <code>{{ALGUIEN}}</code>. Nada se sube: todo queda en tu dispositivo.</p>
-        <label>BAJO (30 líneas)</label>
-        <textarea id="taLow"></textarea>
-        <label>MEDIO (30 líneas)</label>
-        <textarea id="taMid"></textarea>
-        <label>ALTO (30 líneas)</label>
-        <textarea id="taHigh" placeholder="Aquí puedes pegar tus textos intensos si lo deseas."></textarea>
-        <div class="btnrow" style="margin-top:10px;">
+        <label>BAJO (30 líneas)</label><textarea id="taLow"></textarea>
+        <label>MEDIO (30 líneas)</label><textarea id="taMid"></textarea>
+        <label>ALTO (30 líneas)</label><textarea id="taHigh" placeholder="Aquí puedes pegar tus textos intensos si lo deseas."></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
           <button id="useCustom" class="secondary" type="button">Usar listas pegadas</button>
           <button id="saveLS" class="secondary" type="button">Guardar en este dispositivo</button>
           <button id="exportBtn" class="secondary" type="button">Exportar (.json)</button>
-          <label class="secondary" style="display:inline-block; padding:10px 14px; border-radius:12px; cursor:pointer;">
-            Importar (.json)
-            <input id="importFile" type="file" accept=".json" style="display:none">
+          <label class="secondary" style="display:inline-block;padding:10px 14px;border-radius:12px;cursor:pointer">
+            Importar (.json) <input id="importFile" type="file" accept=".json" style="display:none">
           </label>
           <button id="clearCustom" class="secondary" type="button">Volver a listas por defecto</button>
         </div>
       </details>
 
       <div class="row" style="margin-top:12px;">
-        <button id="start" type="button">Iniciar (Nivel BAJO)</button>
-        <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
+        <button id="start" class="primary" type="button">Iniciar</button>
+        <div class="switch">
+          <input type="checkbox" id="vibe" />
+          <label for="vibe">Vibrar al sacar reto</label>
+        </div>
       </div>
       <p class="muted" style="margin-top:10px">
         Reglas: Hetero → sexo opuesto. Homosexual → mismo sexo y homo; si no hay, actúa como hetero. Bisexual → cualquiera.
@@ -89,50 +113,53 @@
           <div id="playersList"></div>
         </div>
         <div>
-          <h2>Control</h2>
-          <div class="row">
-            <button id="next" class="big" type="button">🎲 Sacar reto</button>
-            <button id="skip" class="secondary" type="button">Saltar</button>
-          </div>
-          <div class="row" style="margin-top:10px;">
-            <button id="reset" class="secondary" type="button">Reiniciar</button>
-            <button id="backToSetup" class="secondary" type="button">Volver a Inicio</button>
+          <h2>Reto</h2>
+          <div class="challenge" id="challengeBox" style="display:none;">
+            <div class="title" id="chTitle"></div>
+            <div id="chText"></div>
+            <div id="chNote" class="muted" style="margin-top:6px"></div>
           </div>
         </div>
         <div>
-          <h2>Progreso</h2>
+          <h2>Estado</h2>
           <div class="pill">Nivel: <span id="lvl2">BAJO</span></div>
           <div class="pill">Ronda nivel: <span id="round2">0</span>/30</div>
           <div class="pill">Total retos: <span id="total">0</span></div>
         </div>
       </div>
 
-      <div class="challenge" id="challengeBox" style="display:none;">
-        <div class="muted">Título</div>
-        <div id="chTitle" class="title"></div>
-        <div class="muted" style="margin-top:8px">Reto</div>
-        <div id="chText" class="big"></div>
-        <div id="chNote" class="muted" style="margin-top:8px"></div>
+      <div class="dock">
+        <div class="btns wrap" style="padding-inline:16px">
+          <button id="next" class="btn-big btn-green" type="button">🎲 Sacar reto</button>
+          <button id="skip" class="btn-big btn-warn" type="button">Saltar</button>
+          <button id="undo" class="btn-big btn-undo" type="button">Deshacer</button>
+          <button id="reset" class="btn-big secondary" type="button">Reiniciar</button>
+        </div>
+      </div>
+
+      <details class="history">
+        <summary>Historial (últimos 10)</summary>
+        <ul id="histList"></ul>
+      </details>
+
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+        <button id="backToSetup" class="secondary" type="button">Volver a Inicio</button>
+        <button id="shuffle" class="secondary" type="button">Aleatorizar nombres</button>
       </div>
     </div>
-    <div class="footer">Juego de Retos • v2.3 (nivel fijo + listas con guardado / importar / exportar)</div>
+
+    <div class="footer">Juego de Retos • v2.4 (UI mejorada, progreso, historial, deshacer)</div>
   </div>
 
   <div id="toast" class="toast"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  const toast = (msg) => {
-    const el = document.getElementById('toast');
-    el.innerText = msg; el.style.display='block';
-    setTimeout(()=>{ el.style.display='none'; }, 1200);
-  };
+  const $ = id => document.getElementById(id);
+  const toast = (msg) => { const el=$('toast'); el.innerText=msg; el.style.display='block'; setTimeout(()=>el.style.display='none',1200); };
+  const vibrate = () => { if($('vibe').checked && navigator.vibrate) navigator.vibrate(20); };
 
-  /* ========= 90 RETOS =========
-     BAJO (30): físicos-eróticos suaves (sin genitales ni boca)
-     MEDIO (30): quitar prenda parcial, caricias bajo ropa (no gráfico)
-     ALTO (30): PLANTILLAS para que tú completes (marcadas [COMPLETAR])
-  */
+  /* ===== RETOS DEFECTO (BAJO/MEDIO listos, ALTO editable por ti) ===== */
   const SAFE_DEFAULTS = {
     BAJO: [
       "{{ACTOR}} sopla suavemente en el cuello de {{ALGUIEN}} 5 seg.",
@@ -199,320 +226,299 @@ document.addEventListener('DOMContentLoaded', () => {
       "{{ACTOR}} guía las manos de {{ALGUIEN}} a su cintura por 5 seg."
     ],
     ALTO: [
-      // PLANTILLAS para que completes tus retos explícitos si lo deseas
-      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} realizan una acción intensa durante X seg.",
-      "[COMPLETAR] {{ACTOR}} provoca a {{ALGUIEN}} con contacto muy cercano por X seg.",
-      "[COMPLETAR] {{ACTOR}} se acerca y realiza su reto favorito con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} lleva a {{ALGUIEN}} a una acción privada y la ejecuta (X seg).",
-      "[COMPLETAR] Juego a tres: {{ACTOR}} coordina con {{ALGUIEN}} y un tercero (X seg).",
-      "[COMPLETAR] {{ACTOR}} desarrolla un reto de alta intensidad con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] Acción directa entre {{ACTOR}} y {{ALGUIEN}} con pausa y reinicio (X seg).",
-      "[COMPLETAR] {{ACTOR}} invita a {{ALGUIEN}} a un reto de cercanía total (X seg).",
-      "[COMPLETAR] {{ACTOR}} ejecuta un reto apasionado con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} combina contacto y ritmo con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} propone un reto de máximo voltaje a {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} alternan liderazgo en una acción intensa (X seg).",
-      "[COMPLETAR] {{ACTOR}} incorpora un tercer participante en una acción coordinada (X seg).",
-      "[COMPLETAR] {{ACTOR}} aumenta la intensidad gradualmente con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} fija la mirada y realiza su acción preferida con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} guía a {{ALGUIEN}} en un reto avanzado (X seg).",
-      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} cumplen un reto de clímax breve (X seg).",
-      "[COMPLETAR] {{ACTOR}} propone cambio de rol con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} alterna intensidad con {{ALGUIEN}} (rápido/lento) (X seg).",
-      "[COMPLETAR] {{ACTOR}} mantiene contacto continuo con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} invita a {{ALGUIEN}} a proponer una acción intensa (X seg).",
-      "[COMPLETAR] {{ACTOR}} sincroniza respiración y acción con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} añade un gesto audaz con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} realiza un reto final de alta energía con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} coordina señas y acción con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} intensifica el contacto con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} se coloca de forma estratégica con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} cambia de pareja con permiso (si hay 3) (X seg).",
-      "[COMPLETAR] {{ACTOR}} hace un cierre intenso con {{ALGUIEN}} (X seg).",
-      "[COMPLETAR] {{ACTOR}} define el broche final con {{ALGUIEN}} (X seg)."
+      // Coloca aquí tus 30 retos explícitos si lo deseas
+      "[COMPLETAR] Reto 1",
+      "[COMPLETAR] Reto 2",
+      "[COMPLETAR] Reto 3",
+      "[COMPLETAR] Reto 4",
+      "[COMPLETAR] Reto 5",
+      "[COMPLETAR] Reto 6",
+      "[COMPLETAR] Reto 7",
+      "[COMPLETAR] Reto 8",
+      "[COMPLETAR] Reto 9",
+      "[COMPLETAR] Reto 10",
+      "[COMPLETAR] Reto 11",
+      "[COMPLETAR] Reto 12",
+      "[COMPLETAR] Reto 13",
+      "[COMPLETAR] Reto 14",
+      "[COMPLETAR] Reto 15",
+      "[COMPLETAR] Reto 16",
+      "[COMPLETAR] Reto 17",
+      "[COMPLETAR] Reto 18",
+      "[COMPLETAR] Reto 19",
+      "[COMPLETAR] Reto 20",
+      "[COMPLETAR] Reto 21",
+      "[COMPLETAR] Reto 22",
+      "[COMPLETAR] Reto 23",
+      "[COMPLETAR] Reto 24",
+      "[COMPLETAR] Reto 25",
+      "[COMPLETAR] Reto 26",
+      "[COMPLETAR] Reto 27",
+      "[COMPLETAR] Reto 28",
+      "[COMPLETAR] Reto 29",
+      "[COMPLETAR] Reto 30"
     ]
   };
 
   const LEVELS = ["BAJO","MEDIO","ALTO"];
-  const $ = (id) => document.getElementById(id);
+  let RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS));
 
-  let RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS)); // copia
   let state = {
     levelIndex:0, roundInLevel:0, totalRounds:0,
     players:[], // {name, gender:'M'|'F', orient:'hetero'|'homo'|'bi'}
     usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]},
-    inGame:false
+    history:[], // {lvl, idx, actorName, text, counted}
   };
 
   const currentLevel = () => LEVELS[state.levelIndex];
+  const gtxt = g => g==="M"?"Hombre":"Mujer";
+  const otxt = o => o==="hetero"?"Hetero":o==="homo"?"Homosexual":"Bisexual";
 
-  function syncUI() {
-    $("lvl").textContent = currentLevel();
-    $("lvl2").textContent = currentLevel();
-    $("phase").textContent = (state.levelIndex+1)+"/3";
-    $("round").textContent = state.roundInLevel;
-    $("round2").textContent = state.roundInLevel;
-    $("total").textContent = state.totalRounds;
-    $("start").textContent = `Iniciar (Nivel ${currentLevel()})`;
+  function syncUI(){
+    $('lvl2').textContent = currentLevel();
+    $('phase').textContent = (state.levelIndex+1)+"/3";
+    $('round').textContent = state.roundInLevel;
+    $('round2').textContent = state.roundInLevel;
+    $('total').textContent = state.totalRounds;
+    // progress bar
+    $('bar').style.width = (Math.min(30, state.roundInLevel)/30*100)+'%';
+    // segmented
+    $('btnLow').classList.toggle('active', state.levelIndex===0);
+    $('btnMid').classList.toggle('active', state.levelIndex===1);
+    $('btnHigh').classList.toggle('active', state.levelIndex===2);
   }
 
-  // ====== LocalStorage + Import/Export ======
-  const LS_KEY = "retos_personalizados_v1";
+  // ===== LocalStorage + import/export =====
+  const LS_KEY = "retos_personalizados_v2";
   function saveToLS(){
-    const data = {
-      low: $("taLow").value || "",
-      mid: $("taMid").value || "",
-      high: $("taHigh").value || ""
-    };
-    try { localStorage.setItem(LS_KEY, JSON.stringify(data)); toast("💾 Guardado en el dispositivo"); } catch(e){}
+    const data = { low:$('taLow').value||"", mid:$('taMid').value||"", high:$('taHigh').value||"" };
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(data)); toast("💾 Guardado en el dispositivo"); }catch(e){}
   }
   function loadFromLS(){
-    try {
-      const raw = localStorage.getItem(LS_KEY);
-      if(!raw) return;
-      const data = JSON.parse(raw);
-      if(data.low)  $("taLow").value  = data.low;
-      if(data.mid)  $("taMid").value  = data.mid;
-      if(data.high) $("taHigh").value = data.high;
-    } catch(e){}
+    try{
+      const raw = localStorage.getItem(LS_KEY); if(!raw) return;
+      const d = JSON.parse(raw);
+      if(d.low) $('taLow').value=d.low;
+      if(d.mid) $('taMid').value=d.mid;
+      if(d.high) $('taHigh').value=d.high;
+    }catch(e){}
   }
   function exportJSON(){
     const data = {
-      BAJO: $("taLow").value || SAFE_DEFAULTS.BAJO.join("\n"),
-      MEDIO: $("taMid").value || SAFE_DEFAULTS.MEDIO.join("\n"),
-      ALTO: $("taHigh").value || SAFE_DEFAULTS.ALTO.join("\n")
+      BAJO: $('taLow').value || SAFE_DEFAULTS.BAJO.join("\n"),
+      MEDIO: $('taMid').value || SAFE_DEFAULTS.MEDIO.join("\n"),
+      ALTO: $('taHigh').value || SAFE_DEFAULTS.ALTO.join("\n"),
     };
     const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = "retos.json"; a.click();
-    URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob); const a=document.createElement('a');
+    a.href=url; a.download='retos.json'; a.click(); URL.revokeObjectURL(url);
   }
   function importJSON(file){
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
+    const r=new FileReader();
+    r.onload=(ev)=>{
       try{
-        const data = JSON.parse(ev.target.result);
-        if(data.BAJO) $("taLow").value  = Array.isArray(data.BAJO)?data.BAJO.join("\n"):data.BAJO;
-        if(data.MEDIO) $("taMid").value = Array.isArray(data.MEDIO)?data.MEDIO.join("\n"):data.MEDIO;
-        if(data.ALTO) $("taHigh").value = Array.isArray(data.ALTO)?data.ALTO.join("\n"):data.ALTO;
-        saveToLS();
-        toast("📥 Listas importadas");
-      }catch(e){ toast("⚠️ Archivo inválido"); }
+        const data=JSON.parse(ev.target.result);
+        if(data.BAJO) $('taLow').value  = Array.isArray(data.BAJO)?data.BAJO.join("\n"):data.BAJO;
+        if(data.MEDIO) $('taMid').value = Array.isArray(data.MEDIO)?data.MEDIO.join("\n"):data.MEDIO;
+        if(data.ALTO) $('taHigh').value = Array.isArray(data.ALTO)?data.ALTO.join("\n"):data.ALTO;
+        saveToLS(); toast("📥 Listas importadas");
+      }catch{ toast("⚠️ Archivo inválido"); }
     };
-    reader.readAsText(file);
+    r.readAsText(file);
   }
 
-  // ====== Lógica de niveles ======
-  // FIX: cambio manual de nivel limpia reto y reinicia contador del nivel
-  function setLevel(idx, {manual=false} = {}){
-    const clamped = Math.max(0, Math.min(2, idx));
-    if (clamped !== state.levelIndex) {
-      state.levelIndex = clamped;
-      state.roundInLevel = 0;
-
-      // Limpia reto mostrado
-      $("challengeBox").style.display = "none";
-      $("chTitle").textContent = "";
-      $("chText").textContent  = "";
-      $("chNote").textContent  = "";
-
-      syncUI();
-      if (manual) toast(`Nivel cambiado a ${currentLevel()}`);
-    } else {
-      syncUI();
-    }
-  }
-
-  function nextRoundCounters(){
-    state.roundInLevel++; state.totalRounds++;
-    if(state.roundInLevel>=30 && state.levelIndex<2){
-      state.roundInLevel=0; state.levelIndex++; toast("⤴️ Cambio de nivel automático");
-      // Al subir de nivel, limpiar reto mostrado para evitar confusión
-      $("challengeBox").style.display = "none";
-      $("chTitle").textContent = "";
-      $("chText").textContent  = "";
-      $("chNote").textContent  = "";
-    }
-    syncUI();
-  }
-
-  function resetGame(){
-    state.roundInLevel=0; state.totalRounds=0; state.inGame=false;
-    state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
-    // Respeta el levelIndex actual
-    $("challengeBox").style.display="none";
-    syncUI();
-  }
-
-  // ====== UI de jugadores (con ORIENTACIÓN) ======
+  // ===== Jugadores =====
   function renderPlayersConfigurator(){
-    const n = parseInt($("numPlayers").value,10);
-    const root = $("playersCfg"); root.innerHTML="";
-    const defaults = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado"];
+    const n=parseInt($('numPlayers').value,10);
+    const root=$('playersCfg'); root.innerHTML="";
+    const defaults=["Ella","Pareja","Bull","Amiga","Amigo","Invitado"];
     for(let i=0;i<n;i++){
-      const c = document.createElement("div"); c.className="card";
-      c.innerHTML = `
+      const c=document.createElement('div'); c.className='card';
+      c.innerHTML=`
         <label>Jugador ${i+1}</label>
         <input type="text" id="pname_${i}" value="${defaults[i%defaults.length]}">
         <label>Género</label>
-        <select id="pg_${i}">
-          <option value="M">Hombre</option>
-          <option value="F" ${i===0?"selected":""}>Mujer</option>
-        </select>
+        <select id="pg_${i}"><option value="M">Hombre</option><option value="F" ${i===0?'selected':''}>Mujer</option></select>
         <label>Orientación</label>
         <select id="po_${i}">
           <option value="hetero">Hetero</option>
           <option value="homo">Homosexual</option>
           <option value="bi">Bisexual</option>
-        </select>
-      `;
+        </select>`;
       root.appendChild(c);
     }
   }
-
   function collectPlayers(){
-    const n = parseInt($("numPlayers").value,10);
-    state.players = [];
-    for(let i=0;i<n;i++){
-      const name = $("pname_"+i).value.trim() || ("J"+(i+1));
-      const gender = $("pg_"+i).value;
-      const orient = $("po_"+i).value;
-      state.players.push({ name, gender, orient });
+    const n=parseInt($('numPlayers').value,10);
+    state.players=[]; for(let i=0;i<n;i++){
+      const name=$('pname_'+i).value.trim()||('J'+(i+1));
+      const gender=$('pg_'+i).value; const orient=$('po_'+i).value;
+      state.players.push({name,gender,orient});
     }
   }
-
   function listPlayers(){
-    const root=$("playersList"); root.innerHTML="";
-    const ul=document.createElement("ul"); ul.style.margin="0"; ul.style.paddingLeft="18px";
-    const gtxt = g => g==="M"?"Hombre":"Mujer";
-    const otxt = o => o==="hetero"?"Hetero":o==="homo"?"Homosexual":"Bisexual";
-    state.players.forEach(p=>{
-      const li=document.createElement("li");
-      li.textContent=`${p.name} • ${gtxt(p.gender)} • ${otxt(p.orient)}`;
-      ul.appendChild(li);
-    });
+    const root=$('playersList'); root.innerHTML="";
+    const ul=document.createElement('ul'); ul.style.margin='0'; ul.style.paddingLeft='18px';
+    state.players.forEach(p=>{ const li=document.createElement('li'); li.textContent=`${p.name} • ${gtxt(p.gender)} • ${otxt(p.orient)}`; ul.appendChild(li); });
     root.appendChild(ul);
   }
 
-  // Compatibilidad género + orientación
+  // ===== Emparejamiento =====
   function pickPartnerForActor(actor){
-    let pool = [];
-    if (actor.orient === "hetero") {
-      const targets = actor.gender === "M" ? ["F"] : ["M"];
-      pool = state.players.filter(p => targets.includes(p.gender) && p.name !== actor.name);
-    } else if (actor.orient === "homo") {
-      pool = state.players.filter(
-        p => p.gender === actor.gender && p.orient === "homo" && p.name !== actor.name
-      );
-      if (pool.length === 0) {
-        const targets = actor.gender === "M" ? ["F"] : ["M"];
-        pool = state.players.filter(p => targets.includes(p.gender) && p.name !== actor.name);
+    let pool=[];
+    if(actor.orient==='hetero'){
+      const targets=actor.gender==='M'?['F']:['M'];
+      pool=state.players.filter(p=>targets.includes(p.gender)&&p.name!==actor.name);
+    }else if(actor.orient==='homo'){
+      pool=state.players.filter(p=>p.gender===actor.gender&&p.orient==='homo'&&p.name!==actor.name);
+      if(pool.length===0){
+        const targets=actor.gender==='M'?['F']:['M'];
+        pool=state.players.filter(p=>targets.includes(p.gender)&&p.name!==actor.name);
       }
-    } else { // bi
-      pool = state.players.filter(p => p.name !== actor.name);
+    }else{ // bi
+      pool=state.players.filter(p=>p.name!==actor.name);
     }
-    if (pool.length === 0) pool = state.players.filter(p => p.name !== actor.name);
+    if(pool.length===0) pool=state.players.filter(p=>p.name!==actor.name);
     return pool[(Math.random()*pool.length)|0];
   }
+  const renderText=(t,a)=>t.replace(/{{ACTOR}}/g,a.name).replace(/{{ALGUIEN}}/g,pickPartnerForActor(a).name);
 
-  function renderText(text, actor){
-    return text
-      .replace(/{{ACTOR}}/g, actor.name)
-      .replace(/{{ALGUIEN}}/g, pickPartnerForActor(actor).name);
+  // ===== Niveles & progreso =====
+  function setLevel(idx,{manual=false}={}){
+    const clamp=Math.max(0,Math.min(2,idx));
+    if(clamp!==state.levelIndex){
+      state.levelIndex=clamp; state.roundInLevel=0;
+      $('challengeBox').style.display='none'; $('chTitle').textContent=''; $('chText').textContent=''; $('chNote').textContent='';
+      if(manual) toast(`Nivel: ${currentLevel()}`);
+    }
+    syncUI();
+  }
+  function countRound(){
+    state.roundInLevel++; state.totalRounds++;
+    if(state.roundInLevel>=30 && state.levelIndex<2){
+      state.roundInLevel=0; state.levelIndex++; toast("⤴️ Subes de nivel");
+      $('challengeBox').style.display='none'; $('chTitle').textContent=''; $('chText').textContent=''; $('chNote').textContent='';
+    }
+    syncUI();
   }
 
-  // Siempre consulta el nivel actual en tiempo real
-  function nextChallenge(){
-    const lvl = currentLevel();
-    const allLines = (RETOS[lvl] || []).map((t,idx)=>({ idx, text: t }));
-    if (allLines.length === 0) { toast("No hay retos en este nivel"); return; }
-
-    let available = allLines.filter(r => !state.usedByLevel[lvl].includes(r.idx));
-    if (available.length === 0) { state.usedByLevel[lvl] = []; available = allLines; }
-
-    const pick = available[(Math.random()*available.length)|0];
-    state.usedByLevel[lvl].push(pick.idx);
-
-    const actor = state.players[(Math.random()*state.players.length)|0];
-
-    $("chTitle").textContent = `Nivel ${lvl}`;
-    $("chText").textContent  = renderText(pick.text || "", actor);
-    $("chNote").textContent  = "";
-    $("challengeBox").style.display="block";
-
-    nextRoundCounters();
+  function pushHistory(entry){
+    state.history.unshift(entry); // primero arriba
+    if(state.history.length>30) state.history.pop();
+    const ul=$('histList'); ul.innerHTML="";
+    state.history.slice(0,10).forEach(h=>{
+      const li=document.createElement('li');
+      li.textContent=`[${h.lvl}] ${h.actorName} → ${h.text}`;
+      ul.appendChild(li);
+    });
   }
 
-  // Personalización
-  function parseTextareaLines(id){
-    const raw = $(id).value || "";
-    return raw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  function drawChallenge({count=true}={}){
+    const lvl=currentLevel();
+    const all=(RETOS[lvl]||[]).map((t,idx)=>({idx,text:t}));
+    if(!all.length){ toast("No hay retos en este nivel"); return; }
+
+    let avail=all.filter(r=>!state.usedByLevel[lvl].includes(r.idx));
+    if(avail.length===0){ state.usedByLevel[lvl]=[]; avail=all; }
+
+    const pick=avail[(Math.random()*avail.length)|0];
+    const actor=state.players[(Math.random()*state.players.length)|0];
+
+    $('chTitle').textContent=`Nivel ${lvl}`;
+    $('chText').textContent=renderText(pick.text||"",actor);
+    $('chNote').textContent="";
+    $('challengeBox').style.display='block';
+
+    // historial
+    pushHistory({lvl,idx:pick.idx,actorName:actor.name,text:$('chText').textContent,counted:!!count});
+
+    if(count){
+      state.usedByLevel[lvl].push(pick.idx);
+      countRound();
+    }
+    vibrate();
   }
+
+  function undoLast(){
+    const last=state.history.find(h=>h.counted===true);
+    if(!last){ toast("Nada para deshacer"); return; }
+    // remover el primero contado del histórico (éste) para no deshacer dos veces
+    const idx=state.history.indexOf(last);
+    if(idx>-1) state.history.splice(idx,1);
+    // revert counters y used
+    if(state.roundInLevel===0 && state.levelIndex>0){
+      state.levelIndex--; state.roundInLevel=29;
+    }else{
+      state.roundInLevel=Math.max(0,state.roundInLevel-1);
+    }
+    state.totalRounds=Math.max(0,state.totalRounds-1);
+    const arr=state.usedByLevel[last.lvl]; const p=arr.indexOf(last.idx);
+    if(p>-1) arr.splice(p,1);
+    syncUI();
+    toast("↩️ Deshecho");
+  }
+
+  function resetGame(){
+    state.roundInLevel=0; state.totalRounds=0;
+    state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    state.history=[];
+    $('histList').innerHTML="";
+    $('challengeBox').style.display='none'; $('chTitle').textContent=''; $('chText').textContent=''; $('chNote').textContent='';
+    syncUI();
+  }
+
+  // ===== Personalización =====
+  function parseLines(id){ return ($(id).value||"").split(/\r?\n/).map(s=>s.trim()).filter(Boolean); }
   function applyCustomLists(){
-    const low = parseTextareaLines("taLow");
-    const mid = parseTextareaLines("taMid");
-    const high = parseTextareaLines("taHigh");
-    const next = { BAJO: low.length?low:SAFE_DEFAULTS.BAJO,
-                   MEDIO: mid.length?mid:SAFE_DEFAULTS.MEDIO,
-                   ALTO: high.length?high:SAFE_DEFAULTS.ALTO };
-    RETOS = next;
+    const low=parseLines('taLow'), mid=parseLines('taMid'), high=parseLines('taHigh');
+    RETOS = { BAJO: low.length?low:SAFE_DEFAULTS.BAJO, MEDIO: mid.length?mid:SAFE_DEFAULTS.MEDIO, ALTO: high.length?high:SAFE_DEFAULTS.ALTO };
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
-    $("challengeBox").style.display="none";
-    saveToLS();
-    toast("✅ Listas aplicadas");
+    $('challengeBox').style.display='none';
+    saveToLS(); toast("✅ Listas aplicadas");
   }
-  function clearCustomLists(){
-    $("taLow").value = "";
-    $("taMid").value = "";
-    $("taHigh").value = "";
-    RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS));
+  function clearCustom(){
+    $('taLow').value=$('taMid').value=$('taHigh').value="";
+    RETOS=JSON.parse(JSON.stringify(SAFE_DEFAULTS));
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
-    $("challengeBox").style.display="none";
-    saveToLS();
-    toast("🔄 Vuelves a las listas por defecto");
+    $('challengeBox').style.display='none';
+    saveToLS(); toast("🔄 Listas por defecto");
   }
 
-  // Bindings
-  $("numPlayers").addEventListener("change",renderPlayersConfigurator);
-  $("shuffle").addEventListener("click",()=>{
-    const n = parseInt($("numPlayers").value,10);
-    const pool = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado","X1","X2","X3"];
-    for(let i=0;i<n;i++){ $("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
+  // ===== Eventos =====
+  $('numPlayers').addEventListener('change',renderPlayersConfigurator);
+  $('shuffle').addEventListener('click',()=>{
+    const n=parseInt($('numPlayers').value,10);
+    const pool=["Ella","Pareja","Bull","Amiga","Amigo","Invitado","X1","X2","X3"];
+    for(let i=0;i<n;i++){ $('pname_'+i).value = pool[(Math.random()*pool.length)|0]; }
     toast("🔀 Nombres aleatorizados");
   });
 
-  $("useCustom").addEventListener("click", applyCustomLists);
-  $("clearCustom").addEventListener("click", clearCustomLists);
-  $("saveLS").addEventListener("click", saveToLS);
-  $("exportBtn").addEventListener("click", exportJSON);
-  $("importFile").addEventListener("change", (e)=>{ if(e.target.files[0]) importJSON(e.target.files[0]); });
+  $('useCustom').addEventListener('click',applyCustomLists);
+  $('clearCustom').addEventListener('click',clearCustom);
+  $('saveLS').addEventListener('click',saveToLS);
+  $('exportBtn').addEventListener('click',exportJSON);
+  $('importFile').addEventListener('change',e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); });
 
-  $("start").addEventListener("click",()=>{
+  $('start').addEventListener('click',()=>{
     collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
-    document.getElementById("setup").style.display="none";
-    document.getElementById("game").style.display="block";
-    listPlayers();
-    resetGame(); // respeta nivel seleccionado
-    toast(`✅ ¡Partida iniciada! Nivel ${currentLevel()}`);
+    $('setup').style.display='none'; $('game').style.display='block';
+    listPlayers(); resetGame(); toast("✅ ¡Partida iniciada!");
   });
 
-  $("next").addEventListener("click",nextChallenge);
-  $("skip").addEventListener("click",nextChallenge);
-  $("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
-  $("backToSetup").addEventListener("click",()=>{
-    document.getElementById("game").style.display="none";
-    document.getElementById("setup").style.display="block";
-    syncUI();
-    toast("↩️ Inicio");
-  });
+  $('next').addEventListener('click',()=>drawChallenge({count:true}));
+  $('skip').addEventListener('click',()=>{ drawChallenge({count:false}); toast("⏭️ No contó la ronda"); });
+  $('undo').addEventListener('click',undoLast);
+  $('reset').addEventListener('click',()=>{ resetGame(); toast("🔄 Reiniciado"); });
+  $('backToSetup').addEventListener('click',()=>{ $('game').style.display='none'; $('setup').style.display='block'; syncUI(); toast("↩️ Inicio"); });
 
-  $("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
-  $("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
+  // segmented level buttons
+  $('btnLow').addEventListener('click',()=>setLevel(0,{manual:true}));
+  $('btnMid').addEventListener('click',()=>setLevel(1,{manual:true}));
+  $('btnHigh').addEventListener('click',()=>setLevel(2,{manual:true}));
 
   // init
   renderPlayersConfigurator();
-  loadFromLS();           // recupera lo guardado
+  loadFromLS();
   syncUI();
 });
 </script>
