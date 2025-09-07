@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Juego de Retos Trio</title>
+<title>Juego de Retos Trio • v1.3</title>
 <style>
   :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
   * { box-sizing:border-box }
@@ -52,7 +52,7 @@
         <button id="start" type="button">Iniciar (Nivel BAJO)</button>
         <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
       </div>
-      <p style="color:#a9b2be; margin-top:10px">Tip: define <b>Género</b> y <b>Orientación</b> de cada jugador para que los retos se asignen correctamente.</p>
+      <p style="color:#a9b2be; margin-top:10px">Define <b>Género</b> y <b>Orientación</b> para asignaciones correctas.</p>
     </div>
 
     <div class="card" id="game" style="display:none;">
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>{ el.style.display='none'; }, 1200);
   };
 
-  // ===== RETOS POR DEFECTO (ejemplos; puedes ampliar la lista) =====
+  // ===== RETOS POR DEFECTO (ejemplos; amplía libremente) =====
   let RETOS = [
     { titulo:"Beso rápido", reto:"{{ACTOR}} da un beso en la boca a {{ALGUIEN}} por 3 seg.", nota:"", nivel:"BAJO" },
     { titulo:"Caricia atrevida", reto:"{{ACTOR}} acaricia (sobre la ropa) la nalga de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $("challengeBox").style.display="none";
   }
 
-  // === UI de jugadores ===
+  // === UI de jugadores (incluye ORIENTACIÓN) ===
   function renderPlayersConfigurator(){
     const n = parseInt($("numPlayers").value,10);
     const root = $("playersCfg"); root.innerHTML="";
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     root.appendChild(ul);
   }
 
-  // === Regla de compatibilidad según género + orientación del ACTOR ===
+  // === Compatibilidad según género + orientación del ACTOR ===
   function pickPartnerForActor(actor){
     let targetGenders;
     if (actor.orient === "hetero") {
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pick=pool[(Math.random()*pool.length)|0];
     state.usedByLevel[lvl].push(pick.idx);
 
-    // Elegimos actor al azar
+    // Actor aleatorio
     const actor = state.players[(Math.random()*state.players.length)|0];
 
     $("chTitle").textContent = pick.titulo || "Reto";
