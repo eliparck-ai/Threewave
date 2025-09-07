@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Juego de Retos • Trio (v2.2)</title>
+<title>Juego de Retos • Trio (v2.3)</title>
 <style>
   :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
   * { box-sizing:border-box }
@@ -30,6 +30,7 @@
   .toast { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#1d2230; border:1px solid #2e3444; color:#fff; padding:8px 12px; border-radius:10px; font-size:12px; display:none; z-index:10 }
   .muted { color:#a9b2be; font-size:12px }
   details summary { cursor:pointer; margin:8px 0; color:#d3d8e0 }
+  .btnrow { display:flex; gap:8px; flex-wrap:wrap }
 </style>
 </head>
 <body>
@@ -52,16 +53,22 @@
       <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
 
       <details>
-        <summary>Opcional: pegar tus propias listas (30 por nivel)</summary>
-        <p class="muted">Un reto por línea. Puedes usar <code>{{ACTOR}}</code> y <code>{{ALGUIEN}}</code>. Nada se sube, es local.</p>
+        <summary>Opcional: pegar / guardar tus propias listas (30 por nivel)</summary>
+        <p class="muted">Un reto por línea. Puedes usar <code>{{ACTOR}}</code> y <code>{{ALGUIEN}}</code>. Nada se sube: todo queda en tu dispositivo.</p>
         <label>BAJO (30 líneas)</label>
         <textarea id="taLow"></textarea>
         <label>MEDIO (30 líneas)</label>
         <textarea id="taMid"></textarea>
         <label>ALTO (30 líneas)</label>
         <textarea id="taHigh" placeholder="Aquí puedes pegar tus textos intensos si lo deseas."></textarea>
-        <div class="row" style="margin-top:10px;">
+        <div class="btnrow" style="margin-top:10px;">
           <button id="useCustom" class="secondary" type="button">Usar listas pegadas</button>
+          <button id="saveLS" class="secondary" type="button">Guardar en este dispositivo</button>
+          <button id="exportBtn" class="secondary" type="button">Exportar (.json)</button>
+          <label class="secondary" style="display:inline-block; padding:10px 14px; border-radius:12px; cursor:pointer;">
+            Importar (.json)
+            <input id="importFile" type="file" accept=".json" style="display:none">
+          </label>
           <button id="clearCustom" class="secondary" type="button">Volver a listas por defecto</button>
         </div>
       </details>
@@ -71,7 +78,7 @@
         <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
       </div>
       <p class="muted" style="margin-top:10px">
-        Reglas: Hetero → sexo opuesto. Homosexual → mismo sexo y homo; si no hay, se comporta como hetero. Bisexual → cualquiera.
+        Reglas: Hetero → sexo opuesto. Homosexual → mismo sexo y homo; si no hay, actúa como hetero. Bisexual → cualquiera.
       </p>
     </div>
 
@@ -108,7 +115,7 @@
         <div id="chNote" class="muted" style="margin-top:8px"></div>
       </div>
     </div>
-    <div class="footer">Juego de Retos • v2.2 (fix cambio de nivel)</div>
+    <div class="footer">Juego de Retos • v2.3 (nivel fijo + listas con guardado / importar / exportar)</div>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -192,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "{{ACTOR}} guía las manos de {{ALGUIEN}} a su cintura por 5 seg."
     ],
     ALTO: [
-      // PLANTILLAS para que completes tus retos explícitos si deseas
+      // PLANTILLAS para que completes tus retos explícitos si lo deseas
       "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} realizan una acción intensa durante X seg.",
       "[COMPLETAR] {{ACTOR}} provoca a {{ALGUIEN}} con contacto muy cercano por X seg.",
       "[COMPLETAR] {{ACTOR}} se acerca y realiza su reto favorito con {{ALGUIEN}} (X seg).",
@@ -249,7 +256,55 @@ document.addEventListener('DOMContentLoaded', () => {
     $("start").textContent = `Iniciar (Nivel ${currentLevel()})`;
   }
 
-  // FIX: cambio de nivel limpia reto y fuerza siguiente pool
+  // ====== LocalStorage + Import/Export ======
+  const LS_KEY = "retos_personalizados_v1";
+  function saveToLS(){
+    const data = {
+      low: $("taLow").value || "",
+      mid: $("taMid").value || "",
+      high: $("taHigh").value || ""
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(data)); toast("💾 Guardado en el dispositivo"); } catch(e){}
+  }
+  function loadFromLS(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      const data = JSON.parse(raw);
+      if(data.low)  $("taLow").value  = data.low;
+      if(data.mid)  $("taMid").value  = data.mid;
+      if(data.high) $("taHigh").value = data.high;
+    } catch(e){}
+  }
+  function exportJSON(){
+    const data = {
+      BAJO: $("taLow").value || SAFE_DEFAULTS.BAJO.join("\n"),
+      MEDIO: $("taMid").value || SAFE_DEFAULTS.MEDIO.join("\n"),
+      ALTO: $("taHigh").value || SAFE_DEFAULTS.ALTO.join("\n")
+    };
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "retos.json"; a.click();
+    URL.revokeObjectURL(url);
+  }
+  function importJSON(file){
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(data.BAJO) $("taLow").value  = Array.isArray(data.BAJO)?data.BAJO.join("\n"):data.BAJO;
+        if(data.MEDIO) $("taMid").value = Array.isArray(data.MEDIO)?data.MEDIO.join("\n"):data.MEDIO;
+        if(data.ALTO) $("taHigh").value = Array.isArray(data.ALTO)?data.ALTO.join("\n"):data.ALTO;
+        saveToLS();
+        toast("📥 Listas importadas");
+      }catch(e){ toast("⚠️ Archivo inválido"); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ====== Lógica de niveles ======
+  // FIX: cambio manual de nivel limpia reto y reinicia contador del nivel
   function setLevel(idx, {manual=false} = {}){
     const clamped = Math.max(0, Math.min(2, idx));
     if (clamped !== state.levelIndex) {
@@ -261,9 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
       $("chTitle").textContent = "";
       $("chText").textContent  = "";
       $("chNote").textContent  = "";
-
-      // Si quieres resetear historial del nuevo nivel, descomenta:
-      // state.usedByLevel[LEVELS[state.levelIndex]] = [];
 
       syncUI();
       if (manual) toast(`Nivel cambiado a ${currentLevel()}`);
@@ -288,12 +340,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function resetGame(){
     state.roundInLevel=0; state.totalRounds=0; state.inGame=false;
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
-    // No tocamos levelIndex aquí: que arranque en el nivel seleccionado
+    // Respeta el levelIndex actual
     $("challengeBox").style.display="none";
     syncUI();
   }
 
-  // === UI de jugadores (con ORIENTACIÓN) ===
+  // ====== UI de jugadores (con ORIENTACIÓN) ======
   function renderPlayersConfigurator(){
     const n = parseInt($("numPlayers").value,10);
     const root = $("playersCfg"); root.innerHTML="";
@@ -370,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/{{ALGUIEN}}/g, pickPartnerForActor(actor).name);
   }
 
-  // FIX: siempre consulta el nivel actual en tiempo real
+  // Siempre consulta el nivel actual en tiempo real
   function nextChallenge(){
     const lvl = currentLevel();
     const allLines = (RETOS[lvl] || []).map((t,idx)=>({ idx, text: t }));
@@ -384,17 +436,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const actor = state.players[(Math.random()*state.players.length)|0];
 
-    document.getElementById("chTitle").textContent = `Nivel ${lvl}`;
-    document.getElementById("chText").textContent  = renderText(pick.text || "", actor);
-    document.getElementById("chNote").textContent  = "";
-    document.getElementById("challengeBox").style.display="block";
+    $("chTitle").textContent = `Nivel ${lvl}`;
+    $("chText").textContent  = renderText(pick.text || "", actor);
+    $("chNote").textContent  = "";
+    $("challengeBox").style.display="block";
 
     nextRoundCounters();
   }
 
   // Personalización
   function parseTextareaLines(id){
-    const raw = document.getElementById(id).value || "";
+    const raw = $(id).value || "";
     return raw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
   }
   function applyCustomLists(){
@@ -407,54 +459,60 @@ document.addEventListener('DOMContentLoaded', () => {
     RETOS = next;
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
     $("challengeBox").style.display="none";
+    saveToLS();
     toast("✅ Listas aplicadas");
   }
   function clearCustomLists(){
-    document.getElementById("taLow").value = "";
-    document.getElementById("taMid").value = "";
-    document.getElementById("taHigh").value = "";
+    $("taLow").value = "";
+    $("taMid").value = "";
+    $("taHigh").value = "";
     RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS));
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
     $("challengeBox").style.display="none";
+    saveToLS();
     toast("🔄 Vuelves a las listas por defecto");
   }
 
   // Bindings
-  document.getElementById("numPlayers").addEventListener("change",renderPlayersConfigurator);
-  document.getElementById("shuffle").addEventListener("click",()=>{
-    const n = parseInt(document.getElementById("numPlayers").value,10);
+  $("numPlayers").addEventListener("change",renderPlayersConfigurator);
+  $("shuffle").addEventListener("click",()=>{
+    const n = parseInt($("numPlayers").value,10);
     const pool = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado","X1","X2","X3"];
-    for(let i=0;i<n;i++){ document.getElementById("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
+    for(let i=0;i<n;i++){ $("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
     toast("🔀 Nombres aleatorizados");
   });
 
-  document.getElementById("useCustom").addEventListener("click", applyCustomLists);
-  document.getElementById("clearCustom").addEventListener("click", clearCustomLists);
+  $("useCustom").addEventListener("click", applyCustomLists);
+  $("clearCustom").addEventListener("click", clearCustomLists);
+  $("saveLS").addEventListener("click", saveToLS);
+  $("exportBtn").addEventListener("click", exportJSON);
+  $("importFile").addEventListener("change", (e)=>{ if(e.target.files[0]) importJSON(e.target.files[0]); });
 
-  document.getElementById("start").addEventListener("click",()=>{
+  $("start").addEventListener("click",()=>{
     collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
     document.getElementById("setup").style.display="none";
     document.getElementById("game").style.display="block";
     listPlayers();
-    resetGame();           // no cambia el nivel seleccionado
+    resetGame(); // respeta nivel seleccionado
     toast(`✅ ¡Partida iniciada! Nivel ${currentLevel()}`);
   });
 
-  document.getElementById("next").addEventListener("click",nextChallenge);
-  document.getElementById("skip").addEventListener("click",nextChallenge);
-  document.getElementById("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
-  document.getElementById("backToSetup").addEventListener("click",()=>{
+  $("next").addEventListener("click",nextChallenge);
+  $("skip").addEventListener("click",nextChallenge);
+  $("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
+  $("backToSetup").addEventListener("click",()=>{
     document.getElementById("game").style.display="none";
     document.getElementById("setup").style.display="block";
     syncUI();
     toast("↩️ Inicio");
   });
 
-  document.getElementById("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
-  document.getElementById("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
+  $("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
+  $("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
 
   // init
   renderPlayersConfigurator();
+  loadFromLS();           // recupera lo guardado
   syncUI();
 });
 </script>
