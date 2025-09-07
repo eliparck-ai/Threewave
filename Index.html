@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Retos Trio — Demo móvil</title>
+<style>
+  :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial; background: var(--bg); color: var(--ink);}
+  header { position: sticky; top:0; background: linear-gradient(180deg, rgba(11,12,16,.95), rgba(11,12,16,.75)); backdrop-filter: blur(6px); padding: 12px 16px; border-bottom: 1px solid #1d2026; display:flex; align-items:center; gap:8px; z-index:1;}
+  .lvl { font-weight: 700; letter-spacing: .4px; }
+  .chip { padding: 6px 10px; border-radius: 999px; background:#1b1f26; border:1px solid #272b33; color:var(--muted); font-size: 12px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 16px; }
+  .card { background: var(--card); border:1px solid #1d2026; border-radius: 16px; padding: 16px; }
+  h1 { font-size: 18px; margin: 0; }
+  h2 { font-size: 16px; margin: 0 0 10px; color:var(--muted); }
+  label { display:block; margin: 10px 0 6px; color:var(--muted);}
+  input, select, button { width:100%; padding: 12px 14px; border-radius: 12px; border:1px solid #282c34; background:#151820; color:var(--ink); }
+  button { background: var(--accent); border-color: transparent; font-weight:700; cursor:pointer; }
+  button.secondary { background:#1d2230; border:1px solid #2e3444; font-weight:600; }
+  .row { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  .row3 { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
+  .toolbar { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .toolbar button { width:auto; padding:10px 12px; border-radius:10px; }
+  .big { font-size: 18px; }
+  .title { font-size: 20px; font-weight: 800; }
+  .muted { color: var(--muted); }
+  .pill { border-radius:999px; padding:4px 10px; background:#1c2030; border:1px solid #2a3042; color:var(--muted); font-size:12px; display:inline-block; margin-right:6px; }
+  .challenge { margin-top: 14px; padding: 14px; background:#0f1117; border:1px dashed #2a3042; border-radius:12px; }
+  .gridPlayers { display:grid; grid-template-columns: repeat(2,1fr); gap:8px; }
+  .gridPlayers .card { padding:12px; }
+  .footer { color:var(--muted); font-size:12px; text-align:center; padding:14px; }
+  .fileline { display:flex; gap:8px; align-items:center; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="toolbar">
+      <button id="decLvl" class="secondary">◀︎</button>
+      <div class="chip"><span class="muted">Nivel:</span> <span id="lvl" class="lvl">BAJO</span></div>
+      <button id="incLvl" class="secondary">▶︎</button>
+      <div class="chip">Ronda: <span id="round">0</span>/30</div>
+      <div class="chip">Fase: <span id="phase">1/3</span></div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card" id="setup">
+      <h1>Configurar partida</h1>
+
+      <div class="fileline">
+        <input type="file" id="fileJSON" accept="application/json">
+        <button class="secondary" id="useDefault">Usar retos por defecto</button>
+      </div>
+      <small class="muted">Carga tu <b>retos.json</b> (del Excel) o usa el set por defecto.</small>
+
+      <label style="margin-top:10px;">Número de jugadores</label>
+      <select id="numPlayers">
+        <option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option>
+      </select>
+
+      <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
+
+      <div class="row" style="margin-top:12px;">
+        <button id="start">Iniciar (Nivel BAJO)</button>
+        <button id="shuffle" class="secondary">Aleatorizar Nombres</button>
+      </div>
+      <p class="muted" style="margin-top:10px;">Tip: configura géneros para asignar mejor los retos que dicen “Si eres mujer / hombre”.</p>
+    </div>
+
+    <div class="card" id="game" style="display:none;">
+      <div class="row3">
+        <div>
+          <h2 class="muted">Participantes</h2>
+          <div id="playersList"></div>
+        </div>
+        <div>
+          <h2 class="muted">Control</h2>
+          <div class="row">
+            <button id="next" class="big">🎲 Sacar reto</button>
+            <button id="skip" class="secondary">Saltar</button>
+          </div>
+          <div style="margin-top:10px;" class="row">
+            <button id="reset" class="secondary">Reiniciar</button>
+            <button id="backToSetup" class="secondary">Volver a Inicio</button>
+          </div>
+        </div>
+        <div>
+          <h2 class="muted">Progreso</h2>
+          <div class="pill">Nivel: <span id="lvl2">BAJO</span></div>
+          <div class="pill">Ronda nivel: <span id="round2">0</span>/30</div>
+          <div class="pill">Total retos: <span id="total">0</span></div>
+        </div>
+      </div>
+
+      <div class="challenge" id="challengeBox" style="display:none;">
+        <div class="muted">Título</div>
+        <div id="chTitle" class="title"></div>
+        <div class="muted" style="margin-top:8px;">Reto</div>
+        <div id="chText" class="big"></div>
+        <div id="chNote" class="muted" style="margin-top:8px;"></div>
+      </div>
+    </div>
+    <div class="footer">Demo offline • v1.1</div>
+  </div>
+
+<script>
+// ===== Set por defecto (ejemplo). Reemplaza o carga un retos.json propio =====
+let RETOS = [
+  { titulo:"Teta por fuera", reto:"Si eres mujer: toca la teta de una mujer del grupo (sobre la ropa).", nota:"Tu pareja puede asignar con quién.", nivel:"BAJO" },
+  { titulo:"Cuello lento", reto:"Lame el cuello de una persona durante 10 segundos.", nota:"", nivel:"BAJO" },
+  { titulo:"Oral breve", reto:"Da sexo oral por 20 segundos a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
+  { titulo:"Perrito", reto:"Colócate en posición de perrito con {{ALGUIEN}}.", nota:"", nivel:"ALTO" }
+];
+
+// Cargar JSON externo (ej: exportado del Excel)
+document.getElementById('fileJSON').addEventListener('change', async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+    if (!Array.isArray(parsed)) throw new Error('JSON debe ser un array');
+    RETOS = parsed;
+    alert('✅ Retos cargados');
+  } catch (err) { alert('Error al leer JSON: ' + err.message); }
+});
+document.getElementById('useDefault').addEventListener('click', ()=>alert('Usando el set por defecto.'));
+
+const LEVELS = ["BAJO","MEDIO","ALTO"];
+const $ = (id)=>document.getElementById(id);
+
+let state = {
+  levelIndex: 0, roundInLevel: 0, totalRounds: 0,
+  players: [],
+  usedByLevel: { "BAJO": [], "MEDIO": [], "ALTO": [] }
+};
+
+function renderPlayersConfigurator(){
+  const n = parseInt($("numPlayers").value,10);
+  const root = $("playersCfg");
+  root.innerHTML = "";
+  const defaults = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado"];
