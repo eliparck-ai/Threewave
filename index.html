@@ -1,32 +1,520 @@
-ALTO: [
-  "{{ACTOR}} y {{ALGUIEN}} se besan apasionadamente durante 15 segundos.",
-  "{{ACTOR}} acaricia íntimamente a {{ALGUIEN}} bajo la ropa interior durante 10 segundos.",
-  "{{ACTOR}} guía la mano de {{ALGUIEN}} a sus zonas íntimas durante 8 segundos.",
-  "{{ACTOR}} realiza sexo oral a {{ALGUIEN}} durante 12 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} practican una posición sexual durante 20 segundos.",
-  "{{ACTOR}} estimula manualmente los genitales de {{ALGUIEN}} durante 15 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} tienen relaciones sexuales completas durante 30 segundos.",
-  "{{ACTOR}} realiza un striptease sensual para {{ALGUIEN}} durante 25 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} se masturban mutuamente durante 18 segundos.",
-  "{{ACTOR}} incorpora juguetes sexuales con {{ALGUIEN}} durante 22 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} exploran el BDSM suave con amarras durante 20 segundos.",
-  "{{ACTOR}} realiza un masaje erótico completo a {{ALGUIEN}} durante 25 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} practican sexo anal durante 15 segundos.",
-  "{{ACTOR}} estimula múltiples zonas erógenas de {{ALGUIEN}} simultáneamente durante 20 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} alcanzan el orgasmo mutuamente.",
-  "{{ACTOR}} incorpora a {{ALGUIEN1}} y {{ALGUIEN2}} en un trío durante 30 segundos.",
-  "{{ACTOR}} alterna entre {{ALGUIEN1}} y {{ALGUIEN2}} en juegos sexuales durante 25 segundos.",
-  "{{ACTOR}} coordina una doble penetración simbólica con {{ALGUIEN1}} y {{ALGUIEN2}} durante 20 segundos.",
-  "{{ACTOR}} recibe atención simultánea de {{ALGUIEN1}} y {{ALGUIEN2}} durante 22 segundos.",
-  "{{ACTOR}} dirige un juego grupal con {{ALGUIEN1}} y {{ALGUIEN2}} durante 28 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} experimentan con diferentes ángulos sexuales durante 18 segundos.",
-  "{{ACTOR}} realiza juegos de roles sexuales intensos con {{ALGUIEN}} durante 20 segundos.",
-  "{{ACTOR}} incorpora elementos de dominación/sumisión con {{ALGUIEN}} durante 15 segundos.",
-  "{{ACTOR}} y {{ALGUIEN}} exploran fetiches mutuos durante 25 segundos.",
-  "{{ACTOR}} crea una fantasía sexual completa con {{ALGUIEN}} durante 30 segundos.",
-  "{{ACTOR}} alterna entre sexo lento y rápido con {{ALGUIEN}} durante 20 segundos.",
-  "{{ACTOR}} mantiene contacto sexual continuo con {{ALGUIEN}} durante 25 segundos.",
-  "{{ACTOR}} sincroniza movimientos sexuales con {{ALGUIEN}} durante 18 segundos.",
-  "{{ACTOR}} termina con una posición sexual intensa con {{ALGUIEN}} durante 15 segundos.",
-  "{{ACTOR}} culmina la experiencia sexual con {{ALGUIEN}} de manera memorable."
-]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Juego de Retos • Trio (v2.3)</title>
+<style>
+  :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
+  * { box-sizing:border-box }
+  body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial; background:var(--bg); color:var(--ink) }
+  header { position:sticky; top:0; background:linear-gradient(180deg, rgba(11,12,16,.95), rgba(11,12,16,.75)); backdrop-filter:blur(6px); padding:12px 16px; border-bottom:1px solid #1d2026; display:flex; gap:8px; flex-wrap:wrap }
+  .chip { padding:6px 10px; border-radius:999px; background:#1b1f26; border:1px solid #272b33; color:var(--muted); font-size:12px }
+  .lvl { font-weight:700 }
+  .wrap { max-width:980px; margin:0 auto; padding:16px }
+  .card { background:#111318; border:1px solid #1d2026; border-radius:16px; padding:16px }
+  h1 { font-size:18px; margin:0 }
+  h2 { font-size:16px; margin:0 0 10px; color:var(--muted) }
+  label { display:block; margin:10px 0 6px; color:var(--muted) }
+  input, select, button, textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid #282c34; background:#151820; color:var(--ink) }
+  button { background:var(--accent); border-color:transparent; font-weight:700; cursor:pointer }
+  button.secondary { background:#1d2230; border:1px solid #2e3444; font-weight:600 }
+  textarea { min-height:120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; resize:vertical }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:12px }
+  .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px }
+  .pill { border-radius:999px; padding:4px 10px; background:#1c2030; border:1px solid #2a3042; color:#a9b2be; font-size:12px; display:inline-block; margin-right:6px }
+  .challenge { margin-top:14px; padding:14px; background:#0f1117; border:1px dashed #2a3042; border-radius:12px }
+  .gridPlayers { display:grid; grid-template-columns:repeat(2,1fr); gap:8px }
+  .gridPlayers .card { padding:12px }
+  .footer { color:#a9b2be; font-size:12px; text-align:center; padding:14px }
+  .toast { position:fixed; bottom:14px; left:50%; transform:translateX(-50%); background:#1d2230; border:1px solid #2e3444; color:#fff; padding:8px 12px; border-radius:10px; font-size:12px; display:none; z-index:10 }
+  .muted { color:#a9b2be; font-size:12px }
+  details summary { cursor:pointer; margin:8px 0; color:#d3d8e0 }
+  .btnrow { display:flex; gap:8px; flex-wrap:wrap }
+</style>
+</head>
+<body>
+  <header>
+    <button id="decLvl" class="secondary" type="button">◀︎</button>
+    <div class="chip">Nivel: <span id="lvl" class="lvl">BAJO</span></div>
+    <button id="incLvl" class="secondary" type="button">▶︎</button>
+    <div class="chip">Ronda: <span id="round">0</span>/30</div>
+    <div class="chip">Fase: <span id="phase">1/3</span></div>
+  </header>
+
+  <div class="wrap">
+    <div class="card" id="setup">
+      <h1>Configurar partida</h1>
+      <label>Número de jugadores</label>
+      <select id="numPlayers">
+        <option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option>
+      </select>
+
+      <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
+
+      <details>
+        <summary>Opcional: pegar / guardar tus propias listas (30 por nivel)</summary>
+        <p class="muted">Un reto por línea. Puedes usar <code>{{ACTOR}}</code> y <code>{{ALGUIEN}}</code>. Nada se sube: todo queda en tu dispositivo.</p>
+        <label>BAJO (30 líneas)</label>
+        <textarea id="taLow"></textarea>
+        <label>MEDIO (30 líneas)</label>
+        <textarea id="taMid"></textarea>
+        <label>ALTO (30 líneas)</label>
+        <textarea id="taHigh" placeholder="Aquí puedes pegar tus textos intensos si lo deseas."></textarea>
+        <div class="btnrow" style="margin-top:10px;">
+          <button id="useCustom" class="secondary" type="button">Usar listas pegadas</button>
+          <button id="saveLS" class="secondary" type="button">Guardar en este dispositivo</button>
+          <button id="exportBtn" class="secondary" type="button">Exportar (.json)</button>
+          <label class="secondary" style="display:inline-block; padding:10px 14px; border-radius:12px; cursor:pointer;">
+            Importar (.json)
+            <input id="importFile" type="file" accept=".json" style="display:none">
+          </label>
+          <button id="clearCustom" class="secondary" type="button">Volver a listas por defecto</button>
+        </div>
+      </details>
+
+      <div class="row" style="margin-top:12px;">
+        <button id="start" type="button">Iniciar (Nivel BAJO)</button>
+        <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
+      </div>
+      <p class="muted" style="margin-top:10px">
+        Reglas: Hetero → sexo opuesto. Homosexual → mismo sexo y homo; si no hay, actúa como hetero. Bisexual → cualquiera.
+      </p>
+    </div>
+
+    <div class="card" id="game" style="display:none;">
+      <div class="row3">
+        <div>
+          <h2>Participantes</h2>
+          <div id="playersList"></div>
+        </div>
+        <div>
+          <h2>Control</h2>
+          <div class="row">
+            <button id="next" class="big" type="button">🎲 Sacar reto</button>
+            <button id="skip" class="secondary" type="button">Saltar</button>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button id="reset" class="secondary" type="button">Reiniciar</button>
+            <button id="backToSetup" class="secondary" type="button">Volver a Inicio</button>
+          </div>
+        </div>
+        <div>
+          <h2>Progreso</h2>
+          <div class="pill">Nivel: <span id="lvl2">BAJO</span></div>
+          <div class="pill">Ronda nivel: <span id="round2">0</span>/30</div>
+          <div class="pill">Total retos: <span id="total">0</span></div>
+        </div>
+      </div>
+
+      <div class="challenge" id="challengeBox" style="display:none;">
+        <div class="muted">Título</div>
+        <div id="chTitle" class="title"></div>
+        <div class="muted" style="margin-top:8px">Reto</div>
+        <div id="chText" class="big"></div>
+        <div id="chNote" class="muted" style="margin-top:8px"></div>
+      </div>
+    </div>
+    <div class="footer">Juego de Retos • v2.3 (nivel fijo + listas con guardado / importar / exportar)</div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const toast = (msg) => {
+    const el = document.getElementById('toast');
+    el.innerText = msg; el.style.display='block';
+    setTimeout(()=>{ el.style.display='none'; }, 1200);
+  };
+
+  /* ========= 90 RETOS =========
+     BAJO (30): físicos-eróticos suaves (sin genitales ni boca)
+     MEDIO (30): quitar prenda parcial, caricias bajo ropa (no gráfico)
+     ALTO (30): PLANTILLAS para que tú completes (marcadas [COMPLETAR])
+  */
+  const SAFE_DEFAULTS = {
+    BAJO: [
+      "{{ACTOR}} sopla suavemente en el cuello de {{ALGUIEN}} 5 seg.",
+      "{{ACTOR}} respira en la nuca de {{ALGUIEN}} muy cerca 5 seg.",
+      "{{ACTOR}} se coloca frente a frente con {{ALGUIEN}} y acerca su frente 3 seg.",
+      "{{ACTOR}} acaricia las manos de {{ALGUIEN}} lentamente.",
+      "{{ACTOR}} masajea los hombros de {{ALGUIEN}} 15 seg.",
+      "{{ACTOR}} acaricia el antebrazo de {{ALGUIEN}} con la yema de los dedos.",
+      "{{ACTOR}} roza la nariz con la de {{ALGUIEN}} (media luna) 2 seg.",
+      "{{ACTOR}} posa su mano en la cintura de {{ALGUIEN}} 5 seg (sobre ropa).",
+      "{{ACTOR}} besa la mejilla de {{ALGUIEN}} de forma corta.",
+      "{{ACTOR}} besa la sien de {{ALGUIEN}}.",
+      "{{ACTOR}} besa detrás de la oreja de {{ALGUIEN}} (breve).",
+      "{{ACTOR}} acaricia la espalda baja de {{ALGUIEN}} sobre la ropa 5 seg.",
+      "{{ACTOR}} desliza sus dedos por la mandíbula de {{ALGUIEN}}.",
+      "{{ACTOR}} toma a {{ALGUIEN}} de la mano y da 3 pasos guiando.",
+      "{{ACTOR}} apoya su frente en la de {{ALGUIEN}} y respiran juntos 5 seg.",
+      "{{ACTOR}} se sienta muy pegado a {{ALGUIEN}} 10 seg.",
+      "{{ACTOR}} baila lento con {{ALGUIEN}} 10 seg, marcando suavemente.",
+      "{{ACTOR}} besa la frente de {{ALGUIEN}}.",
+      "{{ACTOR}} roza la mejilla de {{ALGUIEN}} con sus pestañas (mariposa).",
+      "{{ACTOR}} acaricia la rodilla de {{ALGUIEN}} (ropa) 3 seg.",
+      "{{ACTOR}} roza los dedos por el cuello de {{ALGUIEN}} (sin labios).",
+      "{{ACTOR}} besa la comisura de {{ALGUIEN}} sin tocar labios.",
+      "{{ACTOR}} abraza a {{ALGUIEN}} lentamente 5 seg.",
+      "{{ACTOR}} acomoda el cabello de {{ALGUIEN}} rozando su rostro.",
+      "{{ACTOR}} acaricia la clavícula de {{ALGUIEN}} sobre la ropa.",
+      "{{ACTOR}} coloca su mano en el hombro de {{ALGUIEN}} 5 seg.",
+      "{{ACTOR}} sopla aire tibio detrás de la oreja de {{ALGUIEN}}.",
+      "{{ACTOR}} acerca su boca al cuello de {{ALGUIEN}} sin tocar 3 seg.",
+      "{{ACTOR}} roza el muslo de {{ALGUIEN}} suavemente (ropa).",
+      "{{ACTOR}} brinda con {{ALGUIEN}} y le dice qué le atrae de él/ella."
+    ],
+    MEDIO: [
+      "{{ACTOR}} abre lentamente un botón o baja un cierre de {{ALGUIEN}}.",
+      "{{ACTOR}} desliza la mano por la espalda de {{ALGUIEN}} bajo la ropa (zona alta).",
+      "{{ACTOR}} besa la clavícula de {{ALGUIEN}} con la prenda ligeramente apartada.",
+      "{{ACTOR}} acaricia el abdomen de {{ALGUIEN}} bajo la ropa (breve).",
+      "{{ACTOR}} besa lentamente el cuello de {{ALGUIEN}} 10 seg.",
+      "{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} 10 seg.",
+      "{{ACTOR}} acaricia el muslo interno de {{ALGUIEN}} (ropa) 5 seg.",
+      "{{ACTOR}} roza el costado del torso de {{ALGUIEN}} por dentro de la prenda (superficial).",
+      "{{ACTOR}} besa el hombro descubierto de {{ALGUIEN}}.",
+      "{{ACTOR}} guía a {{ALGUIEN}} del talle marcando ritmo 8 seg.",
+      "{{ACTOR}} acerca su boca a la comisura de {{ALGUIEN}} sin besar 2 seg.",
+      "{{ACTOR}} masajea la nuca de {{ALGUIEN}} 15 seg (con ambas manos).",
+      "{{ACTOR}} acaricia la cadera de {{ALGUIEN}} con ambas manos 5 seg.",
+      "{{ACTOR}} descubre un hombro de {{ALGUIEN}} y deja un beso.",
+      "{{ACTOR}} desliza la mano desde el dorso hasta la cintura de {{ALGUIEN}}.",
+      "{{ACTOR}} besa la base del cuello de {{ALGUIEN}} con pausa.",
+      "{{ACTOR}} toma las manos de {{ALGUIEN}} y las apoya en su pecho (sobre ropa).",
+      "{{ACTOR}} se sienta pegado a {{ALGUIEN}} y apoya su cabeza en su hombro.",
+      "{{ACTOR}} susurra algo travieso (no gráfico) al oído de {{ALGUIEN}}.",
+      "{{ACTOR}} deja dos besos separados en el cuello de {{ALGUIEN}}.",
+      "{{ACTOR}} acaricia la parte baja de la espalda de {{ALGUIEN}} bajo la ropa (breve).",
+      "{{ACTOR}} gira a {{ALGUIEN}} tomándolo de la cintura y lo acerca al pecho.",
+      "{{ACTOR}} besa la línea de la mandíbula de {{ALGUIEN}} lentamente.",
+      "{{ACTOR}} acaricia los glúteos de {{ALGUIEN}} por encima de la ropa 5 seg.",
+      "{{ACTOR}} roza el muslo de {{ALGUIEN}} subiendo un poco (ropa).",
+      "{{ACTOR}} besa la espalda de {{ALGUIEN}} (zona alta).",
+      "{{ACTOR}} roza con sus labios la oreja de {{ALGUIEN}} sin morder.",
+      "{{ACTOR}} marca un balanceo de caderas con {{ALGUIEN}} 10 seg.",
+      "{{ACTOR}} apoya su frente en la de {{ALGUIEN}} y lo besa en la mejilla.",
+      "{{ACTOR}} guía las manos de {{ALGUIEN}} a su cintura por 5 seg."
+    ],
+    ALTO: [
+      // PLANTILLAS para que completes tus retos explícitos si lo deseas
+      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} realizan una acción intensa durante X seg.",
+      "[COMPLETAR] {{ACTOR}} provoca a {{ALGUIEN}} con contacto muy cercano por X seg.",
+      "[COMPLETAR] {{ACTOR}} se acerca y realiza su reto favorito con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} lleva a {{ALGUIEN}} a una acción privada y la ejecuta (X seg).",
+      "[COMPLETAR] Juego a tres: {{ACTOR}} coordina con {{ALGUIEN}} y un tercero (X seg).",
+      "[COMPLETAR] {{ACTOR}} desarrolla un reto de alta intensidad con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] Acción directa entre {{ACTOR}} y {{ALGUIEN}} con pausa y reinicio (X seg).",
+      "[COMPLETAR] {{ACTOR}} invita a {{ALGUIEN}} a un reto de cercanía total (X seg).",
+      "[COMPLETAR] {{ACTOR}} ejecuta un reto apasionado con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} combina contacto y ritmo con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} propone un reto de máximo voltaje a {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} alternan liderazgo en una acción intensa (X seg).",
+      "[COMPLETAR] {{ACTOR}} incorpora un tercer participante en una acción coordinada (X seg).",
+      "[COMPLETAR] {{ACTOR}} aumenta la intensidad gradualmente con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} fija la mirada y realiza su acción preferida con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} guía a {{ALGUIEN}} en un reto avanzado (X seg).",
+      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} cumplen un reto de clímax breve (X seg).",
+      "[COMPLETAR] {{ACTOR}} propone cambio de rol con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} alterna intensidad con {{ALGUIEN}} (rápido/lento) (X seg).",
+      "[COMPLETAR] {{ACTOR}} mantiene contacto continuo con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} invita a {{ALGUIEN}} a proponer una acción intensa (X seg).",
+      "[COMPLETAR] {{ACTOR}} sincroniza respiración y acción con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} añade un gesto audaz con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} realiza un reto final de alta energía con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} coordina señas y acción con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} intensifica el contacto con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} se coloca de forma estratégica con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} cambia de pareja con permiso (si hay 3) (X seg).",
+      "[COMPLETAR] {{ACTOR}} hace un cierre intenso con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} define el broche final con {{ALGUIEN}} (X seg)."
+    ]
+  };
+
+  const LEVELS = ["BAJO","MEDIO","ALTO"];
+  const $ = (id) => document.getElementById(id);
+
+  let RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS)); // copia
+  let state = {
+    levelIndex:0, roundInLevel:0, totalRounds:0,
+    players:[], // {name, gender:'M'|'F', orient:'hetero'|'homo'|'bi'}
+    usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]},
+    inGame:false
+  };
+
+  const currentLevel = () => LEVELS[state.levelIndex];
+
+  function syncUI() {
+    $("lvl").textContent = currentLevel();
+    $("lvl2").textContent = currentLevel();
+    $("phase").textContent = (state.levelIndex+1)+"/3";
+    $("round").textContent = state.roundInLevel;
+    $("round2").textContent = state.roundInLevel;
+    $("total").textContent = state.totalRounds;
+    $("start").textContent = `Iniciar (Nivel ${currentLevel()})`;
+  }
+
+  // ====== LocalStorage + Import/Export ======
+  const LS_KEY = "retos_personalizados_v1";
+  function saveToLS(){
+    const data = {
+      low: $("taLow").value || "",
+      mid: $("taMid").value || "",
+      high: $("taHigh").value || ""
+    };
+    try { localStorage.setItem(LS_KEY, JSON.stringify(data)); toast("💾 Guardado en el dispositivo"); } catch(e){}
+  }
+  function loadFromLS(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return;
+      const data = JSON.parse(raw);
+      if(data.low)  $("taLow").value  = data.low;
+      if(data.mid)  $("taMid").value  = data.mid;
+      if(data.high) $("taHigh").value = data.high;
+    } catch(e){}
+  }
+  function exportJSON(){
+    const data = {
+      BAJO: $("taLow").value || SAFE_DEFAULTS.BAJO.join("\n"),
+      MEDIO: $("taMid").value || SAFE_DEFAULTS.MEDIO.join("\n"),
+      ALTO: $("taHigh").value || SAFE_DEFAULTS.ALTO.join("\n")
+    };
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "retos.json"; a.click();
+    URL.revokeObjectURL(url);
+  }
+  function importJSON(file){
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(data.BAJO) $("taLow").value  = Array.isArray(data.BAJO)?data.BAJO.join("\n"):data.BAJO;
+        if(data.MEDIO) $("taMid").value = Array.isArray(data.MEDIO)?data.MEDIO.join("\n"):data.MEDIO;
+        if(data.ALTO) $("taHigh").value = Array.isArray(data.ALTO)?data.ALTO.join("\n"):data.ALTO;
+        saveToLS();
+        toast("📥 Listas importadas");
+      }catch(e){ toast("⚠️ Archivo inválido"); }
+    };
+    reader.readAsText(file);
+  }
+
+  // ====== Lógica de niveles ======
+  // FIX: cambio manual de nivel limpia reto y reinicia contador del nivel
+  function setLevel(idx, {manual=false} = {}){
+    const clamped = Math.max(0, Math.min(2, idx));
+    if (clamped !== state.levelIndex) {
+      state.levelIndex = clamped;
+      state.roundInLevel = 0;
+
+      // Limpia reto mostrado
+      $("challengeBox").style.display = "none";
+      $("chTitle").textContent = "";
+      $("chText").textContent  = "";
+      $("chNote").textContent  = "";
+
+      syncUI();
+      if (manual) toast(`Nivel cambiado a ${currentLevel()}`);
+    } else {
+      syncUI();
+    }
+  }
+
+  function nextRoundCounters(){
+    state.roundInLevel++; state.totalRounds++;
+    if(state.roundInLevel>=30 && state.levelIndex<2){
+      state.roundInLevel=0; state.levelIndex++; toast("⤴️ Cambio de nivel automático");
+      // Al subir de nivel, limpiar reto mostrado para evitar confusión
+      $("challengeBox").style.display = "none";
+      $("chTitle").textContent = "";
+      $("chText").textContent  = "";
+      $("chNote").textContent  = "";
+    }
+    syncUI();
+  }
+
+  function resetGame(){
+    state.roundInLevel=0; state.totalRounds=0; state.inGame=false;
+    state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    // Respeta el levelIndex actual
+    $("challengeBox").style.display="none";
+    syncUI();
+  }
+
+  // ====== UI de jugadores (con ORIENTACIÓN) ======
+  function renderPlayersConfigurator(){
+    const n = parseInt($("numPlayers").value,10);
+    const root = $("playersCfg"); root.innerHTML="";
+    const defaults = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado"];
+    for(let i=0;i<n;i++){
+      const c = document.createElement("div"); c.className="card";
+      c.innerHTML = `
+        <label>Jugador ${i+1}</label>
+        <input type="text" id="pname_${i}" value="${defaults[i%defaults.length]}">
+        <label>Género</label>
+        <select id="pg_${i}">
+          <option value="M">Hombre</option>
+          <option value="F" ${i===0?"selected":""}>Mujer</option>
+        </select>
+        <label>Orientación</label>
+        <select id="po_${i}">
+          <option value="hetero">Hetero</option>
+          <option value="homo">Homosexual</option>
+          <option value="bi">Bisexual</option>
+        </select>
+      `;
+      root.appendChild(c);
+    }
+  }
+
+  function collectPlayers(){
+    const n = parseInt($("numPlayers").value,10);
+    state.players = [];
+    for(let i=0;i<n;i++){
+      const name = $("pname_"+i).value.trim() || ("J"+(i+1));
+      const gender = $("pg_"+i).value;
+      const orient = $("po_"+i).value;
+      state.players.push({ name, gender, orient });
+    }
+  }
+
+  function listPlayers(){
+    const root=$("playersList"); root.innerHTML="";
+    const ul=document.createElement("ul"); ul.style.margin="0"; ul.style.paddingLeft="18px";
+    const gtxt = g => g==="M"?"Hombre":"Mujer";
+    const otxt = o => o==="hetero"?"Hetero":o==="homo"?"Homosexual":"Bisexual";
+    state.players.forEach(p=>{
+      const li=document.createElement("li");
+      li.textContent=`${p.name} • ${gtxt(p.gender)} • ${otxt(p.orient)}`;
+      ul.appendChild(li);
+    });
+    root.appendChild(ul);
+  }
+
+  // Compatibilidad género + orientación
+  function pickPartnerForActor(actor){
+    let pool = [];
+    if (actor.orient === "hetero") {
+      const targets = actor.gender === "M" ? ["F"] : ["M"];
+      pool = state.players.filter(p => targets.includes(p.gender) && p.name !== actor.name);
+    } else if (actor.orient === "homo") {
+      pool = state.players.filter(
+        p => p.gender === actor.gender && p.orient === "homo" && p.name !== actor.name
+      );
+      if (pool.length === 0) {
+        const targets = actor.gender === "M" ? ["F"] : ["M"];
+        pool = state.players.filter(p => targets.includes(p.gender) && p.name !== actor.name);
+      }
+    } else { // bi
+      pool = state.players.filter(p => p.name !== actor.name);
+    }
+    if (pool.length === 0) pool = state.players.filter(p => p.name !== actor.name);
+    return pool[(Math.random()*pool.length)|0];
+  }
+
+  function renderText(text, actor){
+    return text
+      .replace(/{{ACTOR}}/g, actor.name)
+      .replace(/{{ALGUIEN}}/g, pickPartnerForActor(actor).name);
+  }
+
+  // Siempre consulta el nivel actual en tiempo real
+  function nextChallenge(){
+    const lvl = currentLevel();
+    const allLines = (RETOS[lvl] || []).map((t,idx)=>({ idx, text: t }));
+    if (allLines.length === 0) { toast("No hay retos en este nivel"); return; }
+
+    let available = allLines.filter(r => !state.usedByLevel[lvl].includes(r.idx));
+    if (available.length === 0) { state.usedByLevel[lvl] = []; available = allLines; }
+
+    const pick = available[(Math.random()*available.length)|0];
+    state.usedByLevel[lvl].push(pick.idx);
+
+    const actor = state.players[(Math.random()*state.players.length)|0];
+
+    $("chTitle").textContent = `Nivel ${lvl}`;
+    $("chText").textContent  = renderText(pick.text || "", actor);
+    $("chNote").textContent  = "";
+    $("challengeBox").style.display="block";
+
+    nextRoundCounters();
+  }
+
+  // Personalización
+  function parseTextareaLines(id){
+    const raw = $(id).value || "";
+    return raw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  }
+  function applyCustomLists(){
+    const low = parseTextareaLines("taLow");
+    const mid = parseTextareaLines("taMid");
+    const high = parseTextareaLines("taHigh");
+    const next = { BAJO: low.length?low:SAFE_DEFAULTS.BAJO,
+                   MEDIO: mid.length?mid:SAFE_DEFAULTS.MEDIO,
+                   ALTO: high.length?high:SAFE_DEFAULTS.ALTO };
+    RETOS = next;
+    state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    $("challengeBox").style.display="none";
+    saveToLS();
+    toast("✅ Listas aplicadas");
+  }
+  function clearCustomLists(){
+    $("taLow").value = "";
+    $("taMid").value = "";
+    $("taHigh").value = "";
+    RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS));
+    state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    $("challengeBox").style.display="none";
+    saveToLS();
+    toast("🔄 Vuelves a las listas por defecto");
+  }
+
+  // Bindings
+  $("numPlayers").addEventListener("change",renderPlayersConfigurator);
+  $("shuffle").addEventListener("click",()=>{
+    const n = parseInt($("numPlayers").value,10);
+    const pool = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado","X1","X2","X3"];
+    for(let i=0;i<n;i++){ $("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
+    toast("🔀 Nombres aleatorizados");
+  });
+
+  $("useCustom").addEventListener("click", applyCustomLists);
+  $("clearCustom").addEventListener("click", clearCustomLists);
+  $("saveLS").addEventListener("click", saveToLS);
+  $("exportBtn").addEventListener("click", exportJSON);
+  $("importFile").addEventListener("change", (e)=>{ if(e.target.files[0]) importJSON(e.target.files[0]); });
+
+  $("start").addEventListener("click",()=>{
+    collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
+    document.getElementById("setup").style.display="none";
+    document.getElementById("game").style.display="block";
+    listPlayers();
+    resetGame(); // respeta nivel seleccionado
+    toast(`✅ ¡Partida iniciada! Nivel ${currentLevel()}`);
+  });
+
+  $("next").addEventListener("click",nextChallenge);
+  $("skip").addEventListener("click",nextChallenge);
+  $("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
+  $("backToSetup").addEventListener("click",()=>{
+    document.getElementById("game").style.display="none";
+    document.getElementById("setup").style.display="block";
+    syncUI();
+    toast("↩️ Inicio");
+  });
+
+  $("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
+  $("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
+
+  // init
+  renderPlayersConfigurator();
+  loadFromLS();           // recupera lo guardado
+  syncUI();
+});
+</script>
+</body>
+</html>
