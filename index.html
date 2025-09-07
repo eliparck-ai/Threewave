@@ -45,12 +45,14 @@
       <select id="numPlayers">
         <option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option>
       </select>
+
       <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
+
       <div class="row" style="margin-top:12px;">
         <button id="start" type="button">Iniciar (Nivel BAJO)</button>
         <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
       </div>
-      <p style="color:#a9b2be; margin-top:10px">Tip: configura géneros para asignar mejor los retos que dicen “Si eres mujer / hombre”.</p>
+      <p style="color:#a9b2be; margin-top:10px">Tip: define <b>Género</b> y <b>Orientación</b> de cada jugador para que los retos se asignen correctamente.</p>
     </div>
 
     <div class="card" id="game" style="display:none;">
@@ -86,7 +88,7 @@
         <div id="chNote" style="color:#a9b2be; margin-top:8px"></div>
       </div>
     </div>
-    <div class="footer">Juego de Retos • v1.0</div>
+    <div class="footer">Juego de Retos • v1.3</div>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -99,19 +101,25 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>{ el.style.display='none'; }, 1200);
   };
 
-  // ===== LISTA DE RETOS POR DEFECTO =====
+  // ===== RETOS POR DEFECTO (ejemplos; puedes ampliar la lista) =====
   let RETOS = [
-    { titulo:"Besos prohibidos", reto:"Besa a {{ALGUIEN}} en la boca durante 5 segundos.", nota:"", nivel:"BAJO" },
-    { titulo:"Caricia atrevida", reto:"Toca (sobre la ropa) la nalga de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
-    { titulo:"Oral breve", reto:"Da sexo oral por 20 seg a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
-    { titulo:"Quitar prenda", reto:"Quita una prenda a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
-    { titulo:"Perrito", reto:"Colócate en posición de perrito con {{ALGUIEN}}.", nota:"", nivel:"ALTO" },
-    { titulo:"Doble placer", reto:"Si hay 2 hombres: alterna sexo oral entre ellos por 30 seg.", nota:"", nivel:"ALTO" }
+    { titulo:"Beso rápido", reto:"{{ACTOR}} da un beso en la boca a {{ALGUIEN}} por 3 seg.", nota:"", nivel:"BAJO" },
+    { titulo:"Caricia atrevida", reto:"{{ACTOR}} acaricia (sobre la ropa) la nalga de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
+    { titulo:"Oral breve", reto:"{{ACTOR}} da sexo oral por 20 seg a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
+    { titulo:"Quitar prenda", reto:"{{ACTOR}} quita una prenda a {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
+    { titulo:"Perrito", reto:"{{ACTOR}} adopta posición de perrito con {{ALGUIEN}}.", nota:"", nivel:"ALTO" },
+    { titulo:"Doble contacto", reto:"{{ACTOR}} usa manos con {{ALGUIEN}} durante 20 seg.", nota:"", nivel:"ALTO" }
   ];
 
   const LEVELS = ["BAJO","MEDIO","ALTO"];
   const $ = (id) => document.getElementById(id);
-  let state = { levelIndex:0, roundInLevel:0, totalRounds:0, players:[], usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]} };
+
+  let state = {
+    levelIndex:0, roundInLevel:0, totalRounds:0,
+    players:[], // {name, gender:'M'|'F', orient:'hetero'|'homo'|'bi'}
+    usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]}
+  };
+
   const currentLevel = () => LEVELS[state.levelIndex];
 
   function setLevel(idx){
@@ -135,62 +143,97 @@ document.addEventListener('DOMContentLoaded', () => {
     setLevel(0); $("round").textContent=0; $("round2").textContent=0; $("total").textContent=0;
     $("challengeBox").style.display="none";
   }
+
+  // === UI de jugadores ===
   function renderPlayersConfigurator(){
     const n = parseInt($("numPlayers").value,10);
-    const root=$("playersCfg"); root.innerHTML="";
-    const defaults=["Ella","Pareja","Bull"];
+    const root = $("playersCfg"); root.innerHTML="";
+    const defaults = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado"];
     for(let i=0;i<n;i++){
-      const c=document.createElement("div"); c.className="card";
-      c.innerHTML=`<label>Jugador ${i+1}</label>
-      <input type="text" id="pname_${i}" value="${defaults[i%defaults.length]}">
-      <label>Género</label>
-      <select id="pg_${i}"><option value="M">Hombre</option><option value="F" ${i===0?"selected":""}>Mujer</option><option value="X">Otro</option></select>`;
+      const c = document.createElement("div"); c.className="card";
+      c.innerHTML = `
+        <label>Jugador ${i+1}</label>
+        <input type="text" id="pname_${i}" value="${defaults[i%defaults.length]}">
+        <label>Género</label>
+        <select id="pg_${i}">
+          <option value="M">Hombre</option>
+          <option value="F" ${i===0?"selected":""}>Mujer</option>
+        </select>
+        <label>Orientación</label>
+        <select id="po_${i}">
+          <option value="hetero">Hetero</option>
+          <option value="homo">Homosexual</option>
+          <option value="bi">Bisexual</option>
+        </select>
+      `;
       root.appendChild(c);
     }
   }
+
   function collectPlayers(){
-    const n=parseInt($("numPlayers").value,10);
-    state.players=[];
+    const n = parseInt($("numPlayers").value,10);
+    state.players = [];
     for(let i=0;i<n;i++){
-      const name=$("pname_"+i).value.trim()||("J"+(i+1));
-      const gender=$("pg_"+i).value;
-      state.players.push({name,gender});
+      const name = $("pname_"+i).value.trim() || ("J"+(i+1));
+      const gender = $("pg_"+i).value;
+      const orient = $("po_"+i).value;
+      state.players.push({ name, gender, orient });
     }
   }
+
   function listPlayers(){
     const root=$("playersList"); root.innerHTML="";
     const ul=document.createElement("ul"); ul.style.margin="0"; ul.style.paddingLeft="18px";
+    const gtxt = g => g==="M"?"Hombre":"Mujer";
+    const otxt = o => o==="hetero"?"Hetero":o==="homo"?"Homosexual":"Bisexual";
     state.players.forEach(p=>{
       const li=document.createElement("li");
-      li.textContent=`${p.name} • ${p.gender==="M"?"Hombre":p.gender==="F"?"Mujer":"X"}`;
+      li.textContent=`${p.name} • ${gtxt(p.gender)} • ${otxt(p.orient)}`;
       ul.appendChild(li);
-    }); root.appendChild(ul);
+    });
+    root.appendChild(ul);
   }
-  function pickEligiblePlayer(text){
-    const lower=text.toLowerCase(); let need=null;
-    if(lower.includes("si eres mujer")) need="F";
-    if(lower.includes("si eres hombre")) need="M";
-    const pool=need?state.players.filter(p=>p.gender===need):state.players.slice();
-    if(pool.length===0) return state.players[(Math.random()*state.players.length)|0];
+
+  // === Regla de compatibilidad según género + orientación del ACTOR ===
+  function pickPartnerForActor(actor){
+    let targetGenders;
+    if (actor.orient === "hetero") {
+      targetGenders = actor.gender === "M" ? ["F"] : ["M"];
+    } else if (actor.orient === "homo") {
+      targetGenders = actor.gender === "M" ? ["M"] : ["F"];
+    } else { // bi
+      targetGenders = ["M","F"];
+    }
+    let pool = state.players.filter(p => targetGenders.includes(p.gender) && p.name !== actor.name);
+    if (pool.length === 0) pool = state.players.filter(p => p.name !== actor.name); // fallback
     return pool[(Math.random()*pool.length)|0];
   }
-  function interpolateNames(text){
-    let out=text;
-    out=out.replace(/{{ALGUIEN}}/g,pickEligiblePlayer(text).name);
-    return out;
+
+  function interpolateNames(text, actor){
+    return text
+      .replace(/{{ACTOR}}/g, actor.name)
+      .replace(/{{ALGUIEN}}/g, pickPartnerForActor(actor).name);
   }
+
   function nextChallenge(){
     const lvl=currentLevel();
     const all=RETOS.map((r,idx)=>Object.assign({idx},r));
     let pool=all.filter(r=>r.nivel===lvl && !state.usedByLevel[lvl].includes(r.idx));
     if(pool.length===0){ state.usedByLevel[lvl]=[]; pool=all.filter(r=>r.nivel===lvl); }
-    const pick=pool[(Math.random()*pool.length)|0]; state.usedByLevel[lvl].push(pick.idx);
-    $("chTitle").textContent=pick.titulo||"Reto";
-    $("chText").textContent=interpolateNames(pick.reto||"");
-    $("chNote").textContent=pick.nota?("Nota: "+pick.nota):"";
-    $("challengeBox").style.display="block"; nextRoundCounters();
+    const pick=pool[(Math.random()*pool.length)|0];
+    state.usedByLevel[lvl].push(pick.idx);
+
+    // Elegimos actor al azar
+    const actor = state.players[(Math.random()*state.players.length)|0];
+
+    $("chTitle").textContent = pick.titulo || "Reto";
+    $("chText").textContent  = interpolateNames(pick.reto || "", actor);
+    $("chNote").textContent  = pick.nota ? ("Nota: "+pick.nota) : "";
+    $("challengeBox").style.display="block";
+    nextRoundCounters();
   }
 
+  // === Bindings
   $("numPlayers").addEventListener("change",renderPlayersConfigurator);
   $("shuffle").addEventListener("click",()=>toast("🔀 Nombres aleatorizados"));
   $("start").addEventListener("click",()=>{
@@ -205,6 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $("incLvl").addEventListener("click",()=>setLevel(state.levelIndex+1));
   $("decLvl").addEventListener("click",()=>setLevel(state.levelIndex-1));
 
+  // init
   renderPlayersConfigurator(); setLevel(0);
 });
 </script>
