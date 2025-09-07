@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Juego de Retos • Trio</title>
+<title>Juego de Retos • Trio (v2.1)</title>
 <style>
   :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
   * { box-sizing:border-box }
@@ -17,9 +17,9 @@
   h2 { font-size:16px; margin:0 0 10px; color:var(--muted) }
   label { display:block; margin:10px 0 6px; color:var(--muted) }
   input, select, button, textarea { width:100%; padding:12px 14px; border-radius:12px; border:1px solid #282c34; background:#151820; color:var(--ink) }
-  textarea { min-height:120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; resize:vertical }
   button { background:var(--accent); border-color:transparent; font-weight:700; cursor:pointer }
   button.secondary { background:#1d2230; border:1px solid #2e3444; font-weight:600 }
+  textarea { min-height:120px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; resize:vertical }
   .row { display:grid; grid-template-columns:1fr 1fr; gap:12px }
   .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px }
   .pill { border-radius:999px; padding:4px 10px; background:#1c2030; border:1px solid #2a3042; color:#a9b2be; font-size:12px; display:inline-block; margin-right:6px }
@@ -52,14 +52,14 @@
       <div id="playersCfg" class="gridPlayers" style="margin-top:12px;"></div>
 
       <details>
-        <summary>Modo personalizado (pegar listas de retos por nivel)</summary>
-        <p class="muted">Escribe <b>un reto por línea</b>. Puedes usar los comodines <code>{{ACTOR}}</code> y <code>{{ALGUIEN}}</code>. Nada se sube, todo queda local en este archivo/navegador.</p>
+        <summary>Opcional: pegar tus propias listas (30 por nivel)</summary>
+        <p class="muted">Un reto por línea. Puedes usar <code>{{ACTOR}}</code> y <code>{{ALGUIEN}}</code>. Nada se sube, es local.</p>
         <label>BAJO (30 líneas)</label>
-        <textarea id="taLow" placeholder="Ej: {{ACTOR}} acaricia el brazo de {{ALGUIEN}} sobre la ropa."></textarea>
+        <textarea id="taLow"></textarea>
         <label>MEDIO (30 líneas)</label>
-        <textarea id="taMid" placeholder="Ej: {{ACTOR}} rodea la cintura de {{ALGUIEN}} y marca el ritmo 10 seg."></textarea>
+        <textarea id="taMid"></textarea>
         <label>ALTO (30 líneas)</label>
-        <textarea id="taHigh" placeholder="Ej: (Aquí puedes pegar tu lista intensa)."></textarea>
+        <textarea id="taHigh" placeholder="Aquí puedes pegar tus textos explícitos si lo deseas."></textarea>
         <div class="row" style="margin-top:10px;">
           <button id="useCustom" class="secondary" type="button">Usar listas pegadas</button>
           <button id="clearCustom" class="secondary" type="button">Volver a listas por defecto</button>
@@ -71,7 +71,7 @@
         <button id="shuffle" class="secondary" type="button">Aleatorizar Nombres</button>
       </div>
       <p class="muted" style="margin-top:10px">
-        Reglas: Hetero → sexo opuesto. Homosexual → mismo sexo con homosexual; si no hay, actúa como hetero. Bisexual → cualquiera.
+        Reglas: Hetero → sexo opuesto. Homosexual → mismo sexo y homo; si no hay, se comporta como hetero. Bisexual → cualquiera.
       </p>
     </div>
 
@@ -108,7 +108,7 @@
         <div id="chNote" class="muted" style="margin-top:8px"></div>
       </div>
     </div>
-    <div class="footer">Juego de Retos • v2.0 (listas personalizables)</div>
+    <div class="footer">Juego de Retos • v2.1 (90 retos • ALTO editable)</div>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -121,107 +121,108 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>{ el.style.display='none'; }, 1200);
   };
 
-  /* ========= RETOS POR DEFECTO (seguros) =========
-     Puedes reemplazarlos pegando tus listas en el panel "Modo personalizado".
-     Usa {{ACTOR}} y {{ALGUIEN}} para insertar nombres automáticamente.
+  /* ========= 90 RETOS =========
+     BAJO (30): físicos-eróticos suaves (sin genitales ni boca)
+     MEDIO (30): quitar prenda parcial, caricias bajo ropa (no gráfico)
+     ALTO (30): PLANTILLAS para que tú completes (marcadas [COMPLETAR])
   */
   const SAFE_DEFAULTS = {
     BAJO: [
-      "{{ACTOR}} acaricia suavemente el brazo de {{ALGUIEN}} sobre la ropa.",
-      "{{ACTOR}} roza la mano de {{ALGUIEN}} y la sostiene 5 seg.",
-      "{{ACTOR}} da un beso corto en la mejilla de {{ALGUIEN}}.",
-      "{{ACTOR}} susurra algo cariñoso al oído de {{ALGUIEN}}.",
-      "{{ACTOR}} besa la frente de {{ALGUIEN}}.",
-      "{{ACTOR}} acomoda el cabello de {{ALGUIEN}} rozando su rostro.",
-      "{{ACTOR}} roza la nariz con la de {{ALGUIEN}} (media luna).",
-      "{{ACTOR}} pasa la mano por la espalda de {{ALGUIEN}} sobre la ropa.",
-      "{{ACTOR}} acaricia la rodilla de {{ALGUIEN}} 3 seg (ropa).",
-      "{{ACTOR}} besa detrás de la oreja de {{ALGUIEN}}.",
-      "{{ACTOR}} le da un beso en la sien a {{ALGUIEN}}.",
-      "{{ACTOR}} apoya su frente contra la de {{ALGUIEN}} 3 seg.",
-      "{{ACTOR}} da un beso en la mano de {{ALGUIEN}}.",
-      "{{ACTOR}} huele el cuello de {{ALGUIEN}} sin tocar.",
+      "{{ACTOR}} sopla suavemente en el cuello de {{ALGUIEN}} 5 seg.",
+      "{{ACTOR}} respira en la nuca de {{ALGUIEN}} muy cerca 5 seg.",
+      "{{ACTOR}} se coloca frente a frente con {{ALGUIEN}} y acerca su frente 3 seg.",
+      "{{ACTOR}} acaricia las manos de {{ALGUIEN}} lentamente.",
+      "{{ACTOR}} masajea los hombros de {{ALGUIEN}} 15 seg.",
+      "{{ACTOR}} acaricia el antebrazo de {{ALGUIEN}} con la yema de los dedos.",
+      "{{ACTOR}} roza la nariz con la de {{ALGUIEN}} (media luna) 2 seg.",
+      "{{ACTOR}} posa su mano en la cintura de {{ALGUIEN}} 5 seg (sobre ropa).",
+      "{{ACTOR}} besa la mejilla de {{ALGUIEN}} de forma corta.",
+      "{{ACTOR}} besa la sien de {{ALGUIEN}}.",
+      "{{ACTOR}} besa detrás de la oreja de {{ALGUIEN}} (breve).",
+      "{{ACTOR}} acaricia la espalda baja de {{ALGUIEN}} sobre la ropa 5 seg.",
+      "{{ACTOR}} desliza sus dedos por la mandíbula de {{ALGUIEN}}.",
+      "{{ACTOR}} toma a {{ALGUIEN}} de la mano y da 3 pasos guiando.",
+      "{{ACTOR}} apoya su frente en la de {{ALGUIEN}} y respiran juntos 5 seg.",
       "{{ACTOR}} se sienta muy pegado a {{ALGUIEN}} 10 seg.",
-      "{{ACTOR}} acaricia el muslo de {{ALGUIEN}} suavemente (ropa).",
-      "{{ACTOR}} roza las pestañas en la mejilla de {{ALGUIEN}}.",
-      "{{ACTOR}} acaricia la espalda baja de {{ALGUIEN}} sobre la ropa.",
-      "{{ACTOR}} baila lentamente pegado a {{ALGUIEN}} 10 seg.",
-      "{{ACTOR}} besa suavemente la comisura de {{ALGUIEN}} sin tocar labios.",
-      "{{ACTOR}} da un beso corto en el hombro de {{ALGUIEN}}.",
-      "{{ACTOR}} acaricia el cuello de {{ALGUIEN}} con un dedo.",
-      "{{ACTOR}} toma la cintura de {{ALGUIEN}} y lo acerca 3 seg.",
-      "{{ACTOR}} da un cumplido a {{ALGUIEN}} al oído.",
-      "{{ACTOR}} acaricia la mandíbula de {{ALGUIEN}} con la mano.",
-      "{{ACTOR}} guía a {{ALGUIEN}} de la mano y da 3 pasos.",
-      "{{ACTOR}} apoya su hombro con el de {{ALGUIEN}} 5 seg.",
-      "{{ACTOR}} dibuja una figura en la mano de {{ALGUIEN}} con un dedo.",
-      "{{ACTOR}} hace reír a {{ALGUIEN}} con una frase pícara pero amable.",
+      "{{ACTOR}} baila lento con {{ALGUIEN}} 10 seg, marcando suavemente.",
+      "{{ACTOR}} besa la frente de {{ALGUIEN}}.",
+      "{{ACTOR}} roza la mejilla de {{ALGUIEN}} con sus pestañas (mariposa).",
+      "{{ACTOR}} acaricia la rodilla de {{ALGUIEN}} (ropa) 3 seg.",
+      "{{ACTOR}} roza los dedos por el cuello de {{ALGUIEN}} (sin labios).",
+      "{{ACTOR}} besa la comisura de {{ALGUIEN}} sin tocar labios.",
+      "{{ACTOR}} abraza a {{ALGUIEN}} lentamente 5 seg.",
+      "{{ACTOR}} acomoda el cabello de {{ALGUIEN}} rozando su rostro.",
+      "{{ACTOR}} acaricia la clavícula de {{ALGUIEN}} sobre la ropa.",
+      "{{ACTOR}} coloca su mano en el hombro de {{ALGUIEN}} 5 seg.",
+      "{{ACTOR}} sopla aire tibio detrás de la oreja de {{ALGUIEN}}.",
+      "{{ACTOR}} acerca su boca al cuello de {{ALGUIEN}} sin tocar 3 seg.",
+      "{{ACTOR}} roza el muslo de {{ALGUIEN}} suavemente (ropa).",
       "{{ACTOR}} brinda con {{ALGUIEN}} y le dice qué le atrae de él/ella."
     ],
     MEDIO: [
-      "{{ACTOR}} pos(a) la mano en el muslo interno de {{ALGUIEN}} (ropa).",
-      "{{ACTOR}} masajea la nuca de {{ALGUIEN}} 15 seg.",
-      "{{ACTOR}} besa el cuello de {{ALGUIEN}} 5 seg.",
-      "{{ACTOR}} rodea la cintura de {{ALGUIEN}} y marca un ritmo suave.",
+      "{{ACTOR}} abre lentamente un botón o baja un cierre de {{ALGUIEN}}.",
+      "{{ACTOR}} desliza la mano por la espalda de {{ALGUIEN}} bajo la ropa (zona alta).",
+      "{{ACTOR}} besa la clavícula de {{ALGUIEN}} con la prenda ligeramente apartada.",
+      "{{ACTOR}} acaricia el abdomen de {{ALGUIEN}} bajo la ropa (breve).",
+      "{{ACTOR}} besa lentamente el cuello de {{ALGUIEN}} 10 seg.",
       "{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} 10 seg.",
-      "{{ACTOR}} abre un botón superficial o baja un cierre 2 cm a {{ALGUIEN}}.",
+      "{{ACTOR}} acaricia el muslo interno de {{ALGUIEN}} (ropa) 5 seg.",
+      "{{ACTOR}} roza el costado del torso de {{ALGUIEN}} por dentro de la prenda (superficial).",
+      "{{ACTOR}} besa el hombro descubierto de {{ALGUIEN}}.",
+      "{{ACTOR}} guía a {{ALGUIEN}} del talle marcando ritmo 8 seg.",
       "{{ACTOR}} acerca su boca a la comisura de {{ALGUIEN}} sin besar 2 seg.",
-      "{{ACTOR}} recorre el costado del torso de {{ALGUIEN}} (ropa) lentamente.",
-      "{{ACTOR}} besa un hombro de {{ALGUIEN}} descubierto.",
-      "{{ACTOR}} confiesa a {{ALGUIEN}} una fantasía breve (no gráfica).",
-      "{{ACTOR}} guía con su mano la espalda baja de {{ALGUIEN}} al caminar.",
-      "{{ACTOR}} masajea hombros de {{ALGUIEN}} 15 seg.",
-      "{{ALGUIEN}} coloca la mano de {{ACTOR}} en su cintura 5 seg.",
-      "{{ACTOR}} toma las manos de {{ALGUIEN}} y las lleva a su pecho (ropa).",
-      "{{ACTOR}} acaricia la cadera de {{ALGUIEN}} 5 seg (ropa).",
-      "{{ACTOR}} descubre un hombro de {{ALGUIEN}} y lo besa una vez.",
+      "{{ACTOR}} masajea la nuca de {{ALGUIEN}} 15 seg (con ambas manos).",
+      "{{ACTOR}} acaricia la cadera de {{ALGUIEN}} con ambas manos 5 seg.",
+      "{{ACTOR}} descubre un hombro de {{ALGUIEN}} y deja un beso.",
       "{{ACTOR}} desliza la mano desde el dorso hasta la cintura de {{ALGUIEN}}.",
-      "{{ACTOR}} se sienta apegado a {{ALGUIEN}} y apoya su cabeza en su hombro.",
-      "{{ACTOR}} repite al oído de {{ALGUIEN}} lo que quiera oír, muy cerca.",
-      "{{ACTOR}} deja dos besos en el cuello de {{ALGUIEN}} con pausa.",
-      "{{ACTOR}} toma las caderas de {{ALGUIEN}} y marca un ritmo 10 seg.",
+      "{{ACTOR}} besa la base del cuello de {{ALGUIEN}} con pausa.",
+      "{{ACTOR}} toma las manos de {{ALGUIEN}} y las apoya en su pecho (sobre ropa).",
+      "{{ACTOR}} se sienta pegado a {{ALGUIEN}} y apoya su cabeza en su hombro.",
+      "{{ACTOR}} susurra algo travieso (no gráfico) al oído de {{ALGUIEN}}.",
+      "{{ACTOR}} deja dos besos separados en el cuello de {{ALGUIEN}}.",
+      "{{ACTOR}} acaricia la parte baja de la espalda de {{ALGUIEN}} bajo la ropa (breve).",
       "{{ACTOR}} gira a {{ALGUIEN}} tomándolo de la cintura y lo acerca al pecho.",
-      "{{ACTOR}} acaricia suavemente la parte baja de la espalda (bajo ropa) de {{ALGUIEN}}.",
-      "{{ACTOR}} acaricia el muslo de {{ALGUIEN}} subiendo un poco (ropa).",
-      "{{ACTOR}} sopla aire tibio al cuello de {{ALGUIEN}} y lo roza con labios sin besar.",
-      "{{ACTOR}} besa la clavícula de {{ALGUIEN}} con la ropa apartada.",
-      "{{ACTOR}} camina detrás de {{ALGUIEN}} con ambas manos en su cintura 5 seg.",
-      "{{ACTOR}} se sienta de espaldas a {{ALGUIEN}} entre sus piernas 10 seg.",
-      "{{ACTOR}} roza el lóbulo de la oreja de {{ALGUIEN}} con un beso suave.",
-      "{{ACTOR}} acerca sus labios a 1 cm de los de {{ALGUIEN}} 3 seg sin tocar."
+      "{{ACTOR}} besa la línea de la mandíbula de {{ALGUIEN}} lentamente.",
+      "{{ACTOR}} acaricia los glúteos de {{ALGUIEN}} por encima de la ropa 5 seg.",
+      "{{ACTOR}} roza el muslo de {{ALGUIEN}} subiendo un poco (ropa).",
+      "{{ACTOR}} besa la espalda de {{ALGUIEN}} (zona alta).",
+      "{{ACTOR}} roza con sus labios la oreja de {{ALGUIEN}} sin morder.",
+      "{{ACTOR}} marca un balanceo de caderas con {{ALGUIEN}} 10 seg.",
+      "{{ACTOR}} apoya su frente en la de {{ALGUIEN}} y lo besa en la mejilla.",
+      "{{ACTOR}} guía las manos de {{ALGUIEN}} a su cintura por 5 seg."
     ],
     ALTO: [
-      // Alto por defecto, manteniendo un lenguaje no explícito
-      "{{ACTOR}} da un beso en los labios de {{ALGUIEN}} (consentido, breve).",
-      "{{ACTOR}} besa lentamente el cuello de {{ALGUIEN}}.",
-      "{{ACTOR}} baila muy pegado con {{ALGUIEN}} 20 seg marcando caderas.",
-      "{{ACTOR}} sostiene el rostro de {{ALGUIEN}} con ambas manos y lo besa.",
-      "{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} mirando a los ojos 10 seg.",
-      "{{ACTOR}} besa la línea de la mandíbula de {{ALGUIEN}}.",
-      "{{ACTOR}} acerca su pecho al de {{ALGUIEN}} y respiran juntos 5 seg.",
-      "{{ACTOR}} sujeta las caderas de {{ALGUIEN}} y marca un ritmo 10 seg.",
-      "{{ACTOR}} besa frente, mejilla, mejilla y comisura de {{ALGUIEN}}.",
-      "{{ACTOR}} pide a {{ALGUIEN}} cerrar los ojos y da un beso suave.",
-      "{{ACTOR}} besa la piel descubierta de la espalda de {{ALGUIEN}}.",
-      "{{ACTOR}} apoya una rodilla entre las piernas de {{ALGUIEN}} (suave, ropa).",
-      "{{ACTOR}} da un beso prolongado a {{ALGUIEN}} (3–5 seg).",
-      "{{ACTOR}} besa el hombro y luego la comisura de {{ALGUIEN}}.",
-      "{{ACTOR}} se sienta de espaldas a {{ALGUIEN}} entre sus piernas 10 seg.",
-      "{{ACTOR}} roza su nariz con la de {{ALGUIEN}} y besa su comisura.",
-      "{{ACTOR}} acerca a {{ALGUIEN}} de la cintura y lo mantiene cerca 5 seg.",
-      "{{ACTOR}} besa a {{ALGUIEN}}, hace una pausa y vuelve a besar.",
-      "{{ACTOR}} invita a un tercero a colocarse cerca, todos muy juntos 10 seg.",
-      "{{ACTOR}} besa a {{ALGUIEN}} y mira al tercero con picardía (sugerente).",
-      "{{ACTOR}} toma una mano de {{ALGUIEN}} y la lleva a su pecho (sobre ropa).",
-      "{{ACTOR}} da una vuelta pegada a {{ALGUIEN}} sujetando su cintura.",
-      "{{ACTOR}} besa con intención pero corto a {{ALGUIEN}}.",
-      "{{ACTOR}} describe a {{ALGUIEN}} una idea para luego (no gráfica).",
-      "{{ACTOR}} coloca sus manos en la cadera de {{ALGUIEN}} y guía 10 seg.",
-      "{{ACTOR}} apoya la frente con la de {{ALGUIEN}} y lo besa enseguida.",
-      "{{ACTOR}} besa la base del cuello de {{ALGUIEN}} lentamente.",
-      "{{ACTOR}} coloca a {{ALGUIEN}} entre sus brazos y acerca sus cuerpos 10 seg.",
-      "{{ACTOR}} da un beso final con pausa y mirada.",
-      "{{ACTOR}} comparte con {{ALGUIEN}} qué imagen se lleva del momento."
+      // PLANTILLAS para que completes tus retos explícitos si deseas
+      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} realizan una acción intensa durante X seg.",
+      "[COMPLETAR] {{ACTOR}} provoca a {{ALGUIEN}} con contacto muy cercano por X seg.",
+      "[COMPLETAR] {{ACTOR}} se acerca y realiza su reto favorito con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} lleva a {{ALGUIEN}} a una acción privada y la ejecuta (X seg).",
+      "[COMPLETAR] Juego a tres: {{ACTOR}} coordina con {{ALGUIEN}} y un tercero (X seg).",
+      "[COMPLETAR] {{ACTOR}} desarrolla un reto de alta intensidad con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] Acción directa entre {{ACTOR}} y {{ALGUIEN}} con pausa y reinicio (X seg).",
+      "[COMPLETAR] {{ACTOR}} invita a {{ALGUIEN}} a un reto de cercanía total (X seg).",
+      "[COMPLETAR] {{ACTOR}} ejecuta un reto apasionado con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} combina contacto y ritmo con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} propone un reto de máximo voltaje a {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} alternan liderazgo en una acción intensa (X seg).",
+      "[COMPLETAR] {{ACTOR}} incorpora un tercer participante en una acción coordinada (X seg).",
+      "[COMPLETAR] {{ACTOR}} aumenta la intensidad gradualmente con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} fija la mirada y realiza su acción preferida con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} guía a {{ALGUIEN}} en un reto avanzado (X seg).",
+      "[COMPLETAR] {{ACTOR}} y {{ALGUIEN}} cumplen un reto de clímax breve (X seg).",
+      "[COMPLETAR] {{ACTOR}} propone cambio de rol con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} alterna intensidad con {{ALGUIEN}} (rápido/lento) (X seg).",
+      "[COMPLETAR] {{ACTOR}} mantiene contacto continuo con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} invita a {{ALGUIEN}} a proponer una acción intensa (X seg).",
+      "[COMPLETAR] {{ACTOR}} sincroniza respiración y acción con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} añade un gesto audaz con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} realiza un reto final de alta energía con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} coordina señas y acción con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} intensifica el contacto con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} se coloca de forma estratégica con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} cambia de pareja con permiso (si hay 3) (X seg).",
+      "[COMPLETAR] {{ACTOR}} hace un cierre intenso con {{ALGUIEN}} (X seg).",
+      "[COMPLETAR] {{ACTOR}} define el broche final con {{ALGUIEN}} (X seg)."
     ]
   };
 
@@ -253,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clamped !== state.levelIndex) {
       state.levelIndex = clamped;
       state.roundInLevel = 0;
-      state.usedByLevel[ currentLevel() ] = state.usedByLevel[ currentLevel() ] || [];
       syncUI();
       if (manual) toast(`Nivel cambiado a ${currentLevel()}`);
     } else {
@@ -395,44 +395,46 @@ document.addEventListener('DOMContentLoaded', () => {
     toast("✅ Listas aplicadas");
   }
   function clearCustomLists(){
-    $("taLow").value = $("taMid").value = $("taHigh").value = "";
+    document.getElementById("taLow").value = "";
+    document.getElementById("taMid").value = "";
+    document.getElementById("taHigh").value = "";
     RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS));
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
     toast("🔄 Vuelves a las listas por defecto");
   }
 
   // === Bindings
-  $("numPlayers").addEventListener("change",renderPlayersConfigurator);
-  $("shuffle").addEventListener("click",()=>{
-    const n = parseInt($("numPlayers").value,10);
+  document.getElementById("numPlayers").addEventListener("change",renderPlayersConfigurator);
+  document.getElementById("shuffle").addEventListener("click",()=>{
+    const n = parseInt(document.getElementById("numPlayers").value,10);
     const pool = ["Ella","Pareja","Bull","Amiga","Amigo","Invitado","X1","X2","X3"];
-    for(let i=0;i<n;i++){ $("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
+    for(let i=0;i<n;i++){ document.getElementById("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
     toast("🔀 Nombres aleatorizados");
   });
 
-  $("useCustom").addEventListener("click", applyCustomLists);
-  $("clearCustom").addEventListener("click", clearCustomLists);
+  document.getElementById("useCustom").addEventListener("click", applyCustomLists);
+  document.getElementById("clearCustom").addEventListener("click", clearCustomLists);
 
-  $("start").addEventListener("click",()=>{
+  document.getElementById("start").addEventListener("click",()=>{
     collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
     document.getElementById("setup").style.display="none";
     document.getElementById("game").style.display="block";
-    listPlayers(); resetGame(); // inicia en BAJO por diseño de 3 fases
+    listPlayers(); resetGame();
     toast(`✅ ¡Partida iniciada! Nivel ${currentLevel()}`);
   });
 
-  $("next").addEventListener("click",nextChallenge);
-  $("skip").addEventListener("click",nextChallenge);
-  $("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
-  $("backToSetup").addEventListener("click",()=>{
+  document.getElementById("next").addEventListener("click",nextChallenge);
+  document.getElementById("skip").addEventListener("click",nextChallenge);
+  document.getElementById("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
+  document.getElementById("backToSetup").addEventListener("click",()=>{
     document.getElementById("game").style.display="none";
     document.getElementById("setup").style.display="block";
     syncUI();
     toast("↩️ Inicio");
   });
 
-  $("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
-  $("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
+  document.getElementById("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
+  document.getElementById("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
 
   // init
   renderPlayersConfigurator();
