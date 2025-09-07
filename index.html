@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Juego de Retos Trio • v1.6</title>
+<title>Juego de Retos Trio • v1.7</title>
 <style>
   :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
   * { box-sizing:border-box }
@@ -88,7 +88,7 @@
         <div id="chNote" style="color:#a9b2be; margin-top:8px"></div>
       </div>
     </div>
-    <div class="footer">Juego de Retos • v1.6</div>
+    <div class="footer">Juego de Retos • v1.7</div>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -101,103 +101,102 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(()=>{ el.style.display='none'; }, 1200);
   };
 
-  // ===== 90 RETOS ÚNICOS (30 por nivel) =====
-  // BAJO: nada de besos en boca (sí mejilla, oreja, cuello, frente, mano, etc.)
+  /* ========== RETOS (30/30/30, no repetitivos, ya de v1.6) ========== */
   const RETOS = [
-    // ---------- BAJO (1–30) ----------
-    { titulo:"Miradas cómplices", reto:"{{ACTOR}} sostiene la mirada de {{ALGUIEN}} con una sonrisa 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Susurro suave", reto:"{{ACTOR}} susurra un cumplido al oído de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
-    { titulo:"Mano en cintura", reto:"{{ACTOR}} posa su mano en la cintura de {{ALGUIEN}} 5 seg (sobre ropa).", nota:"", nivel:"BAJO" },
-    { titulo:"Beso en mejilla", reto:"{{ACTOR}} da un beso en la mejilla de {{ALGUIEN}}.", nota:"Sin boca.", nivel:"BAJO" },
-    { titulo:"Abrazo lento", reto:"{{ACTOR}} abraza a {{ALGUIEN}} lentamente 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Olfato al cuello", reto:"{{ACTOR}} huele el cuello de {{ALGUIEN}} y le dice a qué le recuerda.", nota:"", nivel:"BAJO" },
-    { titulo:"Acomoda cabello", reto:"{{ACTOR}} acomoda el cabello de {{ALGUIEN}} con cuidado.", nota:"", nivel:"BAJO" },
-    { titulo:"Nariz con nariz", reto:"{{ACTOR}} roza su nariz con la de {{ALGUIEN}} 3 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Manos entrelazadas", reto:"{{ACTOR}} entrelaza sus dedos con los de {{ALGUIEN}} y hace un giro suave.", nota:"", nivel:"BAJO" },
-    { titulo:"Beso en frente", reto:"{{ACTOR}} besa la frente de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
-    { titulo:"Caricia de manos", reto:"{{ACTOR}} acaricia el dorso de la mano de {{ALGUIEN}} 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Toque de hombro", reto:"{{ACTOR}} posa su mano en el hombro de {{ALGUIEN}} 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Beso en sien", reto:"{{ACTOR}} da un beso suave en la sien de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
-    { titulo:"Rostro cerca", reto:"{{ACTOR}} acerca su frente a la de {{ALGUIEN}} 3 seg (sin besar).", nota:"", nivel:"BAJO" },
-    { titulo:"Mano en espalda", reto:"{{ACTOR}} posa la mano en la parte baja de la espalda de {{ALGUIEN}} 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Baile corto", reto:"{{ACTOR}} baila junto a {{ALGUIEN}} 10 seg, pegados pero suaves.", nota:"", nivel:"BAJO" },
-    { titulo:"Cosquillas ligeras", reto:"{{ACTOR}} hace cosquillas suaves a {{ALGUIEN}} 2 seg (con permiso).", nota:"", nivel:"BAJO" },
-    { titulo:"Guiño y secreto", reto:"{{ACTOR}} le guiña un ojo a {{ALGUIEN}} y le dice un secreto breve.", nota:"", nivel:"BAJO" },
-    { titulo:"Beso en mano", reto:"{{ACTOR}} besa la mano de {{ALGUIEN}} con calma.", nota:"", nivel:"BAJO" },
-    { titulo:"Cuello sombra", reto:"{{ACTOR}} acerca sus labios al cuello de {{ALGUIEN}} sin tocar 3 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Giro dulce", reto:"{{ACTOR}} toma a {{ALGUIEN}} de la cintura y lo/la gira lentamente.", nota:"", nivel:"BAJO" },
-    { titulo:"Hombro a hombro", reto:"{{ACTOR}} apoya su hombro con el de {{ALGUIEN}} 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Acariciar antebrazo", reto:"{{ACTOR}} recorre con un dedo el antebrazo de {{ALGUIEN}}.", nota:"", nivel:"BAJO" },
-    { titulo:"Beso detrás de oreja", reto:"{{ACTOR}} deja un beso detrás de la oreja de {{ALGUIEN}}.", nota:"Sin boca.", nivel:"BAJO" },
-    { titulo:"Respirar juntos", reto:"{{ACTOR}} y {{ALGUIEN}} respiran coordinados 5 seg muy cerca.", nota:"", nivel:"BAJO" },
-    { titulo:"Dibujar en piel", reto:"{{ACTOR}} dibuja una figura en la mano de {{ALGUIEN}} con el dedo.", nota:"", nivel:"BAJO" },
-    { titulo:"Beso en cuello breve", reto:"{{ACTOR}} da un beso muy corto en el cuello de {{ALGUIEN}}.", nota:"Sin boca.", nivel:"BAJO" },
-    { titulo:"Pestañas mariposa", reto:"{{ACTOR}} roza la mejilla de {{ALGUIEN}} con sus pestañas.", nota:"", nivel:"BAJO" },
-    { titulo:"Silla pegaditos", reto:"{{ACTOR}} se sienta junto a {{ALGUIEN}} muy pegado 5 seg.", nota:"", nivel:"BAJO" },
-    { titulo:"Brindis y halago", reto:"{{ACTOR}} brinda con {{ALGUIEN}} y le dice qué le atrae de él/ella.", nota:"", nivel:"BAJO" },
+    /* --- BAJO (1–30) --- */
+    { titulo:"Miradas cómplices", reto:"{{ACTOR}} sostiene la mirada de {{ALGUIEN}} con una sonrisa 5 seg.", nivel:"BAJO" },
+    { titulo:"Susurro suave", reto:"{{ACTOR}} susurra un cumplido al oído de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Mano en cintura", reto:"{{ACTOR}} posa su mano en la cintura de {{ALGUIEN}} 5 seg (ropa).", nivel:"BAJO" },
+    { titulo:"Beso en mejilla", reto:"{{ACTOR}} da un beso en la mejilla de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Abrazo lento", reto:"{{ACTOR}} abraza a {{ALGUIEN}} lentamente 5 seg.", nivel:"BAJO" },
+    { titulo:"Olfato al cuello", reto:"{{ACTOR}} huele el cuello de {{ALGUIEN}} y le dice a qué le recuerda.", nivel:"BAJO" },
+    { titulo:"Acomoda cabello", reto:"{{ACTOR}} acomoda el cabello de {{ALGUIEN}} con cuidado.", nivel:"BAJO" },
+    { titulo:"Nariz con nariz", reto:"{{ACTOR}} roza su nariz con la de {{ALGUIEN}} 3 seg.", nivel:"BAJO" },
+    { titulo:"Manos entrelazadas", reto:"{{ACTOR}} entrelaza sus dedos con los de {{ALGUIEN}} y hace un giro suave.", nivel:"BAJO" },
+    { titulo:"Beso en frente", reto:"{{ACTOR}} besa la frente de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Caricia de manos", reto:"{{ACTOR}} acaricia el dorso de la mano de {{ALGUIEN}} 5 seg.", nivel:"BAJO" },
+    { titulo:"Toque de hombro", reto:"{{ACTOR}} posa su mano en el hombro de {{ALGUIEN}} 5 seg.", nivel:"BAJO" },
+    { titulo:"Beso en sien", reto:"{{ACTOR}} da un beso suave en la sien de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Rostro cerca", reto:"{{ACTOR}} acerca su frente a la de {{ALGUIEN}} 3 seg (sin besar).", nivel:"BAJO" },
+    { titulo:"Mano en espalda", reto:"{{ACTOR}} posa la mano en la parte baja de la espalda de {{ALGUIEN}} 5 seg.", nivel:"BAJO" },
+    { titulo:"Baile corto", reto:"{{ACTOR}} baila junto a {{ALGUIEN}} 10 seg, pegados pero suaves.", nivel:"BAJO" },
+    { titulo:"Cosquillas ligeras", reto:"{{ACTOR}} hace cosquillas suaves a {{ALGUIEN}} 2 seg (con permiso).", nivel:"BAJO" },
+    { titulo:"Guiño y secreto", reto:"{{ACTOR}} le guiña un ojo a {{ALGUIEN}} y le dice un secreto breve.", nivel:"BAJO" },
+    { titulo:"Beso en mano", reto:"{{ACTOR}} besa la mano de {{ALGUIEN}} con calma.", nivel:"BAJO" },
+    { titulo:"Cuello sombra", reto:"{{ACTOR}} acerca sus labios al cuello de {{ALGUIEN}} sin tocar 3 seg.", nivel:"BAJO" },
+    { titulo:"Giro dulce", reto:"{{ACTOR}} toma a {{ALGUIEN}} de la cintura y lo/la gira lentamente.", nivel:"BAJO" },
+    { titulo:"Hombro a hombro", reto:"{{ACTOR}} apoya su hombro con el de {{ALGUIEN}} 5 seg.", nivel:"BAJO" },
+    { titulo:"Acariciar antebrazo", reto:"{{ACTOR}} recorre con un dedo el antebrazo de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Beso detrás de oreja", reto:"{{ACTOR}} deja un beso detrás de la oreja de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Respirar juntos", reto:"{{ACTOR}} y {{ALGUIEN}} respiran coordinados 5 seg muy cerca.", nivel:"BAJO" },
+    { titulo:"Dibujar en piel", reto:"{{ACTOR}} dibuja una figura en la mano de {{ALGUIEN}} con el dedo.", nivel:"BAJO" },
+    { titulo:"Beso en cuello breve", reto:"{{ACTOR}} da un beso muy corto en el cuello de {{ALGUIEN}}.", nivel:"BAJO" },
+    { titulo:"Pestañas mariposa", reto:"{{ACTOR}} roza la mejilla de {{ALGUIEN}} con sus pestañas.", nivel:"BAJO" },
+    { titulo:"Silla pegaditos", reto:"{{ACTOR}} se sienta junto a {{ALGUIEN}} muy pegado 5 seg.", nivel:"BAJO" },
+    { titulo:"Brindis y halago", reto:"{{ACTOR}} brinda con {{ALGUIEN}} y le dice qué le atrae de él/ella.", nivel:"BAJO" },
 
-    // ---------- MEDIO (31–60) ----------
-    { titulo:"Beso en cuello", reto:"{{ACTOR}} besa el cuello de {{ALGUIEN}} 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Lóbulo de oreja", reto:"{{ACTOR}} roza el lóbulo de la oreja de {{ALGUIEN}} con un beso suave.", nota:"", nivel:"MEDIO" },
-    { titulo:"Masaje de nuca", reto:"{{ACTOR}} da un mini masaje de nuca a {{ALGUIEN}} 15 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Mano en muslo (ropa)", reto:"{{ACTOR}} posa la mano en el muslo de {{ALGUIEN}} 5 seg (sobre ropa).", nota:"", nivel:"MEDIO" },
-    { titulo:"Abrazo por detrás", reto:"{{ACTOR}} abraza por la espalda a {{ALGUIEN}} 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Baile pegado", reto:"{{ACTOR}} baila pegado con {{ALGUIEN}} 20 seg marcando ritmo suave.", nota:"", nivel:"MEDIO" },
-    { titulo:"Ojos vendados", reto:"{{ACTOR}} venda suavemente los ojos de {{ALGUIEN}} y le susurra algo.", nota:"Pañuelo/mano.", nivel:"MEDIO" },
-    { titulo:"Guía de manos", reto:"{{ALGUIEN}} guía la mano de {{ACTOR}} por su espalda (ropa) 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Abrir botón", reto:"{{ACTOR}} abre un botón superficial o baja un cierre 2 cm a {{ALGUIEN}}.", nota:"Sin desnudar.", nivel:"MEDIO" },
-    { titulo:"Regazo 10s", reto:"{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} 10 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Comisura cercana", reto:"{{ACTOR}} acerca su boca a la comisura de {{ALGUIEN}} sin besar 2 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Masaje hombros", reto:"{{ACTOR}} masajea hombros de {{ALGUIEN}} 15 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Rodear cintura", reto:"{{ACTOR}} rodea con ambos brazos la cintura de {{ALGUIEN}} 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Costado torso", reto:"{{ACTOR}} pasa su mano por el costado del torso de {{ALGUIEN}} (ropa) lento.", nota:"", nivel:"MEDIO" },
-    { titulo:"Beso en hombro", reto:"{{ACTOR}} besa un hombro de {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
-    { titulo:"Confiesa fantasía", reto:"{{ACTOR}} le cuenta a {{ALGUIEN}} una fantasía breve.", nota:"", nivel:"MEDIO" },
-    { titulo:"Mano a cintura guiada", reto:"{{ALGUIEN}} coloca la mano de {{ACTOR}} en su cintura por 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Giro al pecho", reto:"{{ACTOR}} toma las manos de {{ALGUIEN}} y lo acerca a su pecho (ropa).", nota:"", nivel:"MEDIO" },
-    { titulo:"Cadera (ropa)", reto:"{{ACTOR}} acaricia la cadera de {{ALGUIEN}} 5 seg (ropa).", nota:"", nivel:"MEDIO" },
-    { titulo:"Beso lento mejilla", reto:"{{ACTOR}} da un beso lento en la mejilla de {{ALGUIEN}} (2 seg).", nota:"", nivel:"MEDIO" },
-    { titulo:"Frente a frente", reto:"{{ACTOR}} apoya su frente en la de {{ALGUIEN}} y respiran juntos 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Casi beso", reto:"{{ACTOR}} acerca sus labios a 1 cm de los de {{ALGUIEN}} 3 seg sin tocar.", nota:"", nivel:"MEDIO" },
-    { titulo:"Descubre hombro", reto:"{{ACTOR}} descubre un hombro de {{ALGUIEN}} y lo besa una vez.", nota:"", nivel:"MEDIO" },
-    { titulo:"Dorso a cintura", reto:"{{ACTOR}} desliza su mano desde el dorso hasta la cintura de {{ALGUIEN}}.", nota:"", nivel:"MEDIO" },
-    { titulo:"Dobles manos", reto:"{{ACTOR}} toma ambas manos de {{ALGUIEN}} y las lleva a su pecho (ropa) 5 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Sillón pegado", reto:"{{ACTOR}} se sienta pegado a {{ALGUIEN}} y apoya su cabeza en su hombro.", nota:"", nivel:"MEDIO" },
-    { titulo:"Eco al oído", reto:"{{ACTOR}} repite al oído de {{ALGUIEN}} lo que quiera oír, muy cerca.", nota:"", nivel:"MEDIO" },
-    { titulo:"Doble cuello", reto:"{{ACTOR}} deja dos besos en el cuello de {{ALGUIEN}} con pausa.", nota:"", nivel:"MEDIO" },
-    { titulo:"Guía de caderas", reto:"{{ACTOR}} toma las caderas de {{ALGUIEN}} y marca un ritmo suave 10 seg.", nota:"", nivel:"MEDIO" },
-    { titulo:"Regazo invertido", reto:"{{ACTOR}} se sienta de espaldas a {{ALGUIEN}} entre sus piernas 10 seg.", nota:"", nivel:"MEDIO" },
+    /* --- MEDIO (31–60) --- */
+    { titulo:"Beso en cuello", reto:"{{ACTOR}} besa el cuello de {{ALGUIEN}} 5 seg.", nivel:"MEDIO" },
+    { titulo:"Lóbulo de oreja", reto:"{{ACTOR}} roza el lóbulo de la oreja de {{ALGUIEN}} con un beso suave.", nivel:"MEDIO" },
+    { titulo:"Masaje de nuca", reto:"{{ACTOR}} da un mini masaje de nuca a {{ALGUIEN}} 15 seg.", nivel:"MEDIO" },
+    { titulo:"Mano en muslo (ropa)", reto:"{{ACTOR}} posa la mano en el muslo de {{ALGUIEN}} 5 seg (ropa).", nivel:"MEDIO" },
+    { titulo:"Abrazo por detrás", reto:"{{ACTOR}} abraza por la espalda a {{ALGUIEN}} 5 seg.", nivel:"MEDIO" },
+    { titulo:"Baile pegado", reto:"{{ACTOR}} baila pegado con {{ALGUIEN}} 20 seg.", nivel:"MEDIO" },
+    { titulo:"Ojos vendados", reto:"{{ACTOR}} venda suavemente los ojos de {{ALGUIEN}} y le susurra algo.", nivel:"MEDIO" },
+    { titulo:"Guía de manos", reto:"{{ALGUIEN}} guía la mano de {{ACTOR}} por su espalda (ropa) 5 seg.", nivel:"MEDIO" },
+    { titulo:"Abrir botón", reto:"{{ACTOR}} abre un botón superficial o baja un cierre 2 cm a {{ALGUIEN}}.", nivel:"MEDIO" },
+    { titulo:"Regazo 10s", reto:"{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} 10 seg.", nivel:"MEDIO" },
+    { titulo:"Comisura cercana", reto:"{{ACTOR}} acerca su boca a la comisura de {{ALGUIEN}} sin besar 2 seg.", nivel:"MEDIO" },
+    { titulo:"Masaje hombros", reto:"{{ACTOR}} masajea hombros de {{ALGUIEN}} 15 seg.", nivel:"MEDIO" },
+    { titulo:"Rodear cintura", reto:"{{ACTOR}} rodea con ambos brazos la cintura de {{ALGUIEN}} 5 seg.", nivel:"MEDIO" },
+    { titulo:"Costado torso", reto:"{{ACTOR}} pasa su mano por el costado del torso de {{ALGUIEN}} (ropa) lento.", nivel:"MEDIO" },
+    { titulo:"Beso en hombro", reto:"{{ACTOR}} besa un hombro de {{ALGUIEN}}.", nivel:"MEDIO" },
+    { titulo:"Confiesa fantasía", reto:"{{ACTOR}} le cuenta a {{ALGUIEN}} una fantasía breve.", nivel:"MEDIO" },
+    { titulo:"Mano a cintura guiada", reto:"{{ALGUIEN}} coloca la mano de {{ACTOR}} en su cintura por 5 seg.", nivel:"MEDIO" },
+    { titulo:"Giro al pecho", reto:"{{ACTOR}} toma las manos de {{ALGUIEN}} y lo acerca a su pecho (ropa).", nivel:"MEDIO" },
+    { titulo:"Cadera (ropa)", reto:"{{ACTOR}} acaricia la cadera de {{ALGUIEN}} 5 seg (ropa).", nivel:"MEDIO" },
+    { titulo:"Beso lento mejilla", reto:"{{ACTOR}} da un beso lento en la mejilla de {{ALGUIEN}} (2 seg).", nivel:"MEDIO" },
+    { titulo:"Frente a frente", reto:"{{ACTOR}} apoya su frente en la de {{ALGUIEN}} y respiran juntos 5 seg.", nivel:"MEDIO" },
+    { titulo:"Casi beso", reto:"{{ACTOR}} acerca sus labios a 1 cm de los de {{ALGUIEN}} 3 seg sin tocar.", nivel:"MEDIO" },
+    { titulo:"Descubre hombro", reto:"{{ACTOR}} descubre un hombro de {{ALGUIEN}} y lo besa una vez.", nivel:"MEDIO" },
+    { titulo:"Dorso a cintura", reto:"{{ACTOR}} desliza su mano desde el dorso hasta la cintura de {{ALGUIEN}}.", nivel:"MEDIO" },
+    { titulo:"Dobles manos", reto:"{{ACTOR}} toma ambas manos de {{ALGUIEN}} y las lleva a su pecho (ropa) 5 seg.", nivel:"MEDIO" },
+    { titulo:"Sillón pegado", reto:"{{ACTOR}} se sienta pegado a {{ALGUIEN}} y apoya su cabeza en su hombro.", nivel:"MEDIO" },
+    { titulo:"Eco al oído", reto:"{{ACTOR}} repite al oído de {{ALGUIEN}} lo que quiera oír, muy cerca.", nivel:"MEDIO" },
+    { titulo:"Doble cuello", reto:"{{ACTOR}} deja dos besos en el cuello de {{ALGUIEN}} con pausa.", nivel:"MEDIO" },
+    { titulo:"Guía de caderas", reto:"{{ACTOR}} toma las caderas de {{ALGUIEN}} y marca un ritmo suave 10 seg.", nivel:"MEDIO" },
+    { titulo:"Regazo invertido", reto:"{{ACTOR}} se sienta de espaldas a {{ALGUIEN}} entre sus piernas 10 seg.", nivel:"MEDIO" },
 
-    // ---------- ALTO (61–90) ----------
-    { titulo:"Beso breve en labios", reto:"{{ACTOR}} da un beso breve en los labios de {{ALGUIEN}}.", nota:"Consentimiento explícito.", nivel:"ALTO" },
-    { titulo:"Sillita mirada fija", reto:"{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} mirándole a los ojos 10 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Cuello lento", reto:"{{ACTOR}} besa y recorre el cuello de {{ALGUIEN}} 7 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Mano guiada atrevida", reto:"{{ALGUIEN}} guía la mano de {{ACTOR}} por su costado hasta la cadera (ropa).", nota:"", nivel:"ALTO" },
-    { titulo:"Labio inferior", reto:"{{ACTOR}} muerde muy suave el labio inferior de {{ALGUIEN}}.", nota:"", nivel:"ALTO" },
-    { titulo:"Baile muy pegado", reto:"{{ACTOR}} baila con {{ALGUIEN}} de forma muy pegada 20 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Espalda descubierta", reto:"{{ACTOR}} descubre parte de la espalda de {{ALGUIEN}} y la recorre con besos.", nota:"", nivel:"ALTO" },
-    { titulo:"Sugerencia al oído", reto:"{{ACTOR}} describe a {{ALGUIEN}} cómo le gustaría que lo/la besen luego.", nota:"", nivel:"ALTO" },
-    { titulo:"Rodilla entre piernas", reto:"{{ACTOR}} apoya una rodilla entre las piernas de {{ALGUIEN}} (ropa) 5 seg.", nota:"Suave.", nivel:"ALTO" },
-    { titulo:"Rostro entre manos", reto:"{{ACTOR}} sujeta el rostro de {{ALGUIEN}} con ambas manos y le da un beso corto.", nota:"", nivel:"ALTO" },
-    { titulo:"Sentadilla juntos", reto:"{{ACTOR}} y {{ALGUIEN}} bajan juntos muy cerca y suben coordinados.", nota:"", nivel:"ALTO" },
-    { titulo:"Beso prolongado", reto:"{{ACTOR}} da un beso prolongado a {{ALGUIEN}} (3–5 seg).", nota:"", nivel:"ALTO" },
-    { titulo:"Cintura a cintura", reto:"{{ACTOR}} rodea la cintura de {{ALGUIEN}} y lo acerca a su cuerpo 5 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Abrazo por cuello", reto:"{{ACTOR}} abraza a {{ALGUIEN}} por el cuello y besa su mejilla lentamente.", nota:"", nivel:"ALTO" },
-    { titulo:"Silla invertida", reto:"{{ACTOR}} se sienta de espaldas a {{ALGUIEN}} entre sus piernas 10 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Cuatro puntos", reto:"{{ACTOR}} besa frente, mejilla, otra mejilla y comisura de {{ALGUIEN}}.", nota:"", nivel:"ALTO" },
-    { titulo:"Nariz y comisura", reto:"{{ACTOR}} roza su nariz con la de {{ALGUIEN}} y besa su comisura.", nota:"", nivel:"ALTO" },
-    { titulo:"Caderas al ritmo", reto:"{{ACTOR}} sujeta caderas de {{ALGUIEN}} y marca un ritmo 10 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Pecho con pecho", reto:"{{ACTOR}} apoya su pecho con el de {{ALGUIEN}} y respiran juntos 5 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Beso- pausa- beso", reto:"{{ACTOR}} besa a {{ALGUIEN}}, hace una pausa, y vuelve a besar.", nota:"", nivel:"ALTO" },
-    { titulo:"Beso sorpresa", reto:"{{ACTOR}} pide a {{ALGUIEN}} cerrar los ojos y da un beso suave.", nota:"", nivel:"ALTO" },
-    { titulo:"Muslo por fuera", reto:"{{ACTOR}} acaricia por fuera el muslo de {{ALGUIEN}} lentamente 5 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Giro a tres", reto:"{{ACTOR}} coloca a {{ALGUIEN}} cerca y hace un giro invitando al tercero.", nota:"Consensuado.", nivel:"ALTO" },
-    { titulo:"Beso alterno", reto:"{{ACTOR}} besa a {{ALGUIEN}} y mira al tercero con picardía.", nota:"", nivel:"ALTO" },
-    { titulo:"Mariposa y beso", reto:"{{ACTOR}} roza con pestañas la mejilla de {{ALGUIEN}} y da un beso.", nota:"", nivel:"ALTO" },
-    { titulo:"Manos al pecho (ropa)", reto:"{{ACTOR}} toma una mano de {{ALGUIEN}} y la lleva a su pecho (ropa) 5 seg.", nota:"", nivel:"ALTO" },
-    { titulo:"Vuelta pegada", reto:"{{ACTOR}} toma de la cintura a {{ALGUIEN}} y lo hace girar muy pegado.", nota:"", nivel:"ALTO" },
-    { titulo:"Beso intenso", reto:"{{ACTOR}} da un beso intenso pero corto a {{ALGUIEN}}.", nota:"", nivel:"ALTO" },
-    { titulo:"Cierre dulce", reto:"{{ACTOR}} le dice a {{ALGUIEN}} qué imagen se lleva de este momento.", nota:"", nivel:"ALTO" }
+    /* --- ALTO (61–90) --- */
+    { titulo:"Beso breve en labios", reto:"{{ACTOR}} da un beso breve en los labios de {{ALGUIEN}}.", nivel:"ALTO" },
+    { titulo:"Sillita mirada fija", reto:"{{ACTOR}} se sienta en el regazo de {{ALGUIEN}} mirándole a los ojos 10 seg.", nivel:"ALTO" },
+    { titulo:"Cuello lento", reto:"{{ACTOR}} besa y recorre el cuello de {{ALGUIEN}} 7 seg.", nivel:"ALTO" },
+    { titulo:"Mano guiada atrevida", reto:"{{ALGUIEN}} guía la mano de {{ACTOR}} por su costado hasta la cadera (ropa).", nivel:"ALTO" },
+    { titulo:"Labio inferior", reto:"{{ACTOR}} muerde muy suave el labio inferior de {{ALGUIEN}}.", nivel:"ALTO" },
+    { titulo:"Baile muy pegado", reto:"{{ACTOR}} baila con {{ALGUIEN}} de forma muy pegada 20 seg.", nivel:"ALTO" },
+    { titulo:"Espalda descubierta", reto:"{{ACTOR}} descubre parte de la espalda de {{ALGUIEN}} y la recorre con besos.", nivel:"ALTO" },
+    { titulo:"Sugerencia al oído", reto:"{{ACTOR}} describe a {{ALGUIEN}} cómo le gustaría que lo/la besen luego.", nivel:"ALTO" },
+    { titulo:"Rodilla entre piernas", reto:"{{ACTOR}} apoya una rodilla entre las piernas de {{ALGUIEN}} (ropa) 5 seg.", nivel:"ALTO" },
+    { titulo:"Rostro entre manos", reto:"{{ACTOR}} sujeta el rostro de {{ALGUIEN}} con ambas manos y le da un beso corto.", nivel:"ALTO" },
+    { titulo:"Sentadilla juntos", reto:"{{ACTOR}} y {{ALGUIEN}} bajan juntos muy cerca y suben coordinados.", nivel:"ALTO" },
+    { titulo:"Beso prolongado", reto:"{{ACTOR}} da un beso prolongado a {{ALGUIEN}} (3–5 seg).", nivel:"ALTO" },
+    { titulo:"Cintura a cintura", reto:"{{ACTOR}} rodea la cintura de {{ALGUIEN}} y lo acerca a su cuerpo 5 seg.", nivel:"ALTO" },
+    { titulo:"Abrazo por cuello", reto:"{{ACTOR}} abraza a {{ALGUIEN}} por el cuello y besa su mejilla lentamente.", nivel:"ALTO" },
+    { titulo:"Silla invertida", reto:"{{ACTOR}} se sienta de espaldas a {{ALGUIEN}} entre sus piernas 10 seg.", nivel:"ALTO" },
+    { titulo:"Cuatro puntos", reto:"{{ACTOR}} besa frente, mejilla, otra mejilla y comisura de {{ALGUIEN}}.", nivel:"ALTO" },
+    { titulo:"Nariz y comisura", reto:"{{ACTOR}} roza su nariz con la de {{ALGUIEN}} y besa su comisura.", nivel:"ALTO" },
+    { titulo:"Caderas al ritmo", reto:"{{ACTOR}} sujeta caderas de {{ALGUIEN}} y marca un ritmo 10 seg.", nivel:"ALTO" },
+    { titulo:"Pecho con pecho", reto:"{{ACTOR}} apoya su pecho con el de {{ALGUIEN}} y respiran juntos 5 seg.", nivel:"ALTO" },
+    { titulo:"Beso-pausa-beso", reto:"{{ACTOR}} besa a {{ALGUIEN}}, hace una pausa y vuelve a besar.", nivel:"ALTO" },
+    { titulo:"Beso sorpresa", reto:"{{ACTOR}} pide a {{ALGUIEN}} cerrar los ojos y da un beso suave.", nivel:"ALTO" },
+    { titulo:"Muslo por fuera", reto:"{{ACTOR}} acaricia por fuera el muslo de {{ALGUIEN}} lentamente 5 seg.", nivel:"ALTO" },
+    { titulo:"Giro a tres", reto:"{{ACTOR}} coloca a {{ALGUIEN}} cerca y hace un giro invitando al tercero.", nivel:"ALTO" },
+    { titulo:"Beso alterno", reto:"{{ACTOR}} besa a {{ALGUIEN}} y mira al tercero con picardía.", nivel:"ALTO" },
+    { titulo:"Mariposa y beso", reto:"{{ACTOR}} roza con pestañas la mejilla de {{ALGUIEN}} y da un beso.", nivel:"ALTO" },
+    { titulo:"Manos al pecho (ropa)", reto:"{{ACTOR}} toma una mano de {{ALGUIEN}} y la lleva a su pecho (ropa) 5 seg.", nivel:"ALTO" },
+    { titulo:"Vuelta pegada", reto:"{{ACTOR}} toma de la cintura a {{ALGUIEN}} y lo hace girar muy pegado.", nivel:"ALTO" },
+    { titulo:"Beso intenso", reto:"{{ACTOR}} da un beso intenso pero corto a {{ALGUIEN}}.", nivel:"ALTO" },
+    { titulo:"Cierre dulce", reto:"{{ACTOR}} le dice a {{ALGUIEN}} qué imagen se lleva de este momento.", nivel:"ALTO" }
   ];
 
   const LEVELS = ["BAJO","MEDIO","ALTO"];
@@ -206,31 +205,50 @@ document.addEventListener('DOMContentLoaded', () => {
   let state = {
     levelIndex:0, roundInLevel:0, totalRounds:0,
     players:[], // {name, gender:'M'|'F', orient:'hetero'|'homo'|'bi'}
-    usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]}
+    usedByLevel:{BAJO:[],MEDIO:[],ALTO:[]},
+    inGame:false
   };
 
   const currentLevel = () => LEVELS[state.levelIndex];
 
-  function setLevel(idx){
-    state.levelIndex = Math.max(0, Math.min(2, idx));
+  function syncUI() {
     $("lvl").textContent = currentLevel();
     $("lvl2").textContent = currentLevel();
     $("phase").textContent = (state.levelIndex+1)+"/3";
-  }
-  function nextRoundCounters(){
-    state.roundInLevel++; state.totalRounds++;
     $("round").textContent = state.roundInLevel;
     $("round2").textContent = state.roundInLevel;
     $("total").textContent = state.totalRounds;
-    if(state.roundInLevel>=30 && state.levelIndex<2){
-      state.roundInLevel=0; setLevel(state.levelIndex+1); toast("⤴️ Cambio de nivel");
+    // Botón iniciar refleja nivel actual
+    $("start").textContent = `Iniciar (Nivel ${currentLevel()})`;
+  }
+
+  function setLevel(idx, {manual=false} = {}){
+    const clamped = Math.max(0, Math.min(2, idx));
+    if (clamped !== state.levelIndex) {
+      state.levelIndex = clamped;
+      // Al cambiar de nivel manualmente, reiniciar contador del nivel
+      state.roundInLevel = 0;
+      // No tocamos totalRounds para mantener el histórico
+      syncUI();
+      if (manual) toast(`Nivel cambiado a ${currentLevel()}`);
+    } else {
+      // Si no cambió, solo sincroniza por si acaso
+      syncUI();
     }
   }
+
+  function nextRoundCounters(){
+    state.roundInLevel++; state.totalRounds++;
+    if(state.roundInLevel>=30 && state.levelIndex<2){
+      state.roundInLevel=0; state.levelIndex++; toast("⤴️ Cambio de nivel automático");
+    }
+    syncUI();
+  }
+
   function resetGame(){
-    state.roundInLevel=0; state.totalRounds=0;
+    state.roundInLevel=0; state.totalRounds=0; state.inGame=false;
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
-    setLevel(0); $("round").textContent=0; $("round2").textContent=0; $("total").textContent=0;
-    $("challengeBox").style.display="none";
+    setLevel(0); $("challengeBox").style.display="none";
   }
 
   // === UI de jugadores (con ORIENTACIÓN) ===
@@ -283,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     root.appendChild(ul);
   }
 
-  // === Compatibilidad según género + orientación del ACTOR ===
+  // === Compatibilidad género + orientación del ACTOR ===
   // Homo: si no hay otro homo del mismo sexo → actúa como hetero.
   function pickPartnerForActor(actor){
     let pool = [];
@@ -302,12 +320,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
     } else { // bi
-      pool = state.players.filter(p => p.name !== actor.name); // cualquier sexo
+      pool = state.players.filter(p => p.name !== actor.name);
     }
 
-    if (pool.length === 0) {
-      pool = state.players.filter(p => p.name !== actor.name); // piñata
-    }
+    if (pool.length === 0) pool = state.players.filter(p => p.name !== actor.name);
     return pool[(Math.random()*pool.length)|0];
   }
 
@@ -318,11 +334,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function nextChallenge(){
-    const lvl=currentLevel();
-    const all=RETOS.map((r,idx)=>Object.assign({idx},r));
-    let pool=all.filter(r=>r.nivel===lvl && !state.usedByLevel[lvl].includes(r.idx));
-    if(pool.length===0){ state.usedByLevel[lvl]=[]; pool=all.filter(r=>r.nivel===lvl); }
-    const pick=pool[(Math.random()*pool.length)|0];
+    const lvl = currentLevel(); // nivel ACTUAL
+    const all = RETOS.map((r,idx)=>({ ...r, idx, nivel:(r.nivel||"").toString().trim().toUpperCase() }));
+    let pool = all.filter(r => r.nivel === lvl && !state.usedByLevel[lvl].includes(r.idx));
+    if(pool.length === 0){ state.usedByLevel[lvl] = []; pool = all.filter(r => r.nivel === lvl); }
+
+    const pick = pool[(Math.random()*pool.length)|0];
     state.usedByLevel[lvl].push(pick.idx);
 
     const actor = state.players[(Math.random()*state.players.length)|0];
@@ -331,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $("chText").textContent  = interpolateNames(pick.reto || "", actor);
     $("chNote").textContent  = pick.nota ? ("Nota: "+pick.nota) : "";
     $("challengeBox").style.display="block";
+
     nextRoundCounters();
   }
 
@@ -342,20 +360,35 @@ document.addEventListener('DOMContentLoaded', () => {
     for(let i=0;i<n;i++){ $("pname_"+i).value = pool[(Math.random()*pool.length)|0]; }
     toast("🔀 Nombres aleatorizados");
   });
+
   $("start").addEventListener("click",()=>{
     collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
-    $("setup").style.display="none"; $("game").style.display="block";
-    listPlayers(); resetGame(); toast("✅ ¡Partida iniciada!");
+    state.inGame = true;
+    document.getElementById("setup").style.display="none";
+    document.getElementById("game").style.display="block";
+    listPlayers(); resetGame(); // resetGame ya pone BAJO; si quieres iniciar en otro, cambia aquí:
+    // setLevel(state.levelIndex); // si prefieres respetar el nivel elegido antes de iniciar
+    toast(`✅ ¡Partida iniciada! Nivel ${currentLevel()}`);
   });
+
   $("next").addEventListener("click",nextChallenge);
   $("skip").addEventListener("click",nextChallenge);
-  $("reset").addEventListener("click",()=>{resetGame();toast("🔄 Reiniciado")});
-  $("backToSetup").addEventListener("click",()=>{$("game").style.display="none";$("setup").style.display="block";toast("↩️ Inicio")});
-  $("incLvl").addEventListener("click",()=>setLevel(state.levelIndex+1));
-  $("decLvl").addEventListener("click",()=>setLevel(state.levelIndex-1));
+  $("reset").addEventListener("click",()=>{ resetGame(); toast("🔄 Reiniciado"); });
+  $("backToSetup").addEventListener("click",()=>{
+    document.getElementById("game").style.display="none";
+    document.getElementById("setup").style.display="block";
+    state.inGame = false;
+    syncUI();
+    toast("↩️ Inicio");
+  });
+
+  // Cambios de nivel manuales (◀︎/▶︎)
+  $("incLvl").addEventListener("click",()=> setLevel(state.levelIndex+1, {manual:true}));
+  $("decLvl").addEventListener("click",()=> setLevel(state.levelIndex-1, {manual:true}));
 
   // init
-  renderPlayersConfigurator(); setLevel(0);
+  renderPlayersConfigurator();
+  syncUI(); // asegura texto botón y chips
 });
 </script>
 </body>
