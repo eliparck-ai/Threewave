@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Juego de Retos • Trio (v2.1)</title>
+<title>Juego de Retos • Trio (v2.2)</title>
 <style>
   :root { --bg:#0b0c10; --card:#111318; --ink:#f3f5f7; --muted:#a9b2be; --accent:#7c4dff; }
   * { box-sizing:border-box }
@@ -59,7 +59,7 @@
         <label>MEDIO (30 líneas)</label>
         <textarea id="taMid"></textarea>
         <label>ALTO (30 líneas)</label>
-        <textarea id="taHigh" placeholder="Aquí puedes pegar tus textos explícitos si lo deseas."></textarea>
+        <textarea id="taHigh" placeholder="Aquí puedes pegar tus textos intensos si lo deseas."></textarea>
         <div class="row" style="margin-top:10px;">
           <button id="useCustom" class="secondary" type="button">Usar listas pegadas</button>
           <button id="clearCustom" class="secondary" type="button">Volver a listas por defecto</button>
@@ -108,7 +108,7 @@
         <div id="chNote" class="muted" style="margin-top:8px"></div>
       </div>
     </div>
-    <div class="footer">Juego de Retos • v2.1 (90 retos • ALTO editable)</div>
+    <div class="footer">Juego de Retos • v2.2 (fix cambio de nivel)</div>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -249,11 +249,22 @@ document.addEventListener('DOMContentLoaded', () => {
     $("start").textContent = `Iniciar (Nivel ${currentLevel()})`;
   }
 
+  // FIX: cambio de nivel limpia reto y fuerza siguiente pool
   function setLevel(idx, {manual=false} = {}){
     const clamped = Math.max(0, Math.min(2, idx));
     if (clamped !== state.levelIndex) {
       state.levelIndex = clamped;
       state.roundInLevel = 0;
+
+      // Limpia reto mostrado
+      $("challengeBox").style.display = "none";
+      $("chTitle").textContent = "";
+      $("chText").textContent  = "";
+      $("chNote").textContent  = "";
+
+      // Si quieres resetear historial del nuevo nivel, descomenta:
+      // state.usedByLevel[LEVELS[state.levelIndex]] = [];
+
       syncUI();
       if (manual) toast(`Nivel cambiado a ${currentLevel()}`);
     } else {
@@ -265,6 +276,11 @@ document.addEventListener('DOMContentLoaded', () => {
     state.roundInLevel++; state.totalRounds++;
     if(state.roundInLevel>=30 && state.levelIndex<2){
       state.roundInLevel=0; state.levelIndex++; toast("⤴️ Cambio de nivel automático");
+      // Al subir de nivel, limpiar reto mostrado para evitar confusión
+      $("challengeBox").style.display = "none";
+      $("chTitle").textContent = "";
+      $("chText").textContent  = "";
+      $("chNote").textContent  = "";
     }
     syncUI();
   }
@@ -272,7 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function resetGame(){
     state.roundInLevel=0; state.totalRounds=0; state.inGame=false;
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
-    setLevel(0); $("challengeBox").style.display="none";
+    // No tocamos levelIndex aquí: que arranque en el nivel seleccionado
+    $("challengeBox").style.display="none";
+    syncUI();
   }
 
   // === UI de jugadores (con ORIENTACIÓN) ===
@@ -325,15 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
     root.appendChild(ul);
   }
 
-  // === Compatibilidad género + orientación del ACTOR ===
-  // Homo: si no hay otro homo del mismo sexo → actúa como hetero.
+  // Compatibilidad género + orientación
   function pickPartnerForActor(actor){
     let pool = [];
-
     if (actor.orient === "hetero") {
       const targets = actor.gender === "M" ? ["F"] : ["M"];
       pool = state.players.filter(p => targets.includes(p.gender) && p.name !== actor.name);
-
     } else if (actor.orient === "homo") {
       pool = state.players.filter(
         p => p.gender === actor.gender && p.orient === "homo" && p.name !== actor.name
@@ -342,11 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const targets = actor.gender === "M" ? ["F"] : ["M"];
         pool = state.players.filter(p => targets.includes(p.gender) && p.name !== actor.name);
       }
-
     } else { // bi
       pool = state.players.filter(p => p.name !== actor.name);
     }
-
     if (pool.length === 0) pool = state.players.filter(p => p.name !== actor.name);
     return pool[(Math.random()*pool.length)|0];
   }
@@ -357,6 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/{{ALGUIEN}}/g, pickPartnerForActor(actor).name);
   }
 
+  // FIX: siempre consulta el nivel actual en tiempo real
   function nextChallenge(){
     const lvl = currentLevel();
     const allLines = (RETOS[lvl] || []).map((t,idx)=>({ idx, text: t }));
@@ -378,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nextRoundCounters();
   }
 
-  // === Personalización: pegar listas ===
+  // Personalización
   function parseTextareaLines(id){
     const raw = document.getElementById(id).value || "";
     return raw.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
@@ -392,6 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
                    ALTO: high.length?high:SAFE_DEFAULTS.ALTO };
     RETOS = next;
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    $("challengeBox").style.display="none";
     toast("✅ Listas aplicadas");
   }
   function clearCustomLists(){
@@ -400,10 +415,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("taHigh").value = "";
     RETOS = JSON.parse(JSON.stringify(SAFE_DEFAULTS));
     state.usedByLevel={BAJO:[],MEDIO:[],ALTO:[]};
+    $("challengeBox").style.display="none";
     toast("🔄 Vuelves a las listas por defecto");
   }
 
-  // === Bindings
+  // Bindings
   document.getElementById("numPlayers").addEventListener("change",renderPlayersConfigurator);
   document.getElementById("shuffle").addEventListener("click",()=>{
     const n = parseInt(document.getElementById("numPlayers").value,10);
@@ -419,7 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
     collectPlayers(); if(state.players.length<2){toast("Mínimo 2 jugadores");return;}
     document.getElementById("setup").style.display="none";
     document.getElementById("game").style.display="block";
-    listPlayers(); resetGame();
+    listPlayers();
+    resetGame();           // no cambia el nivel seleccionado
     toast(`✅ ¡Partida iniciada! Nivel ${currentLevel()}`);
   });
 
